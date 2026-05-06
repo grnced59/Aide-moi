@@ -1,0 +1,48 @@
+--------- beginning of system
+04-21 10:23:49.489   663  1407 I ActivityManager: Force stopping com.aidemoi.app appid=10230 user=0: from pid 25516
+04-21 10:23:49.490   663  1407 I AppsFilter: interaction: PackageSetting{c09621 com.nexora.mobile/10229} -> PackageSetting{28aa376 com.aidemoi.app/10230} BLOCKED
+--------- beginning of main
+04-21 10:23:49.493  1267  1267 D CarrierSvcBindHelper: onHandleForceStop: [com.aidemoi.app]
+04-21 10:23:49.494  1267  1267 D CarrierSvcBindHelper: No carrier app for: 0
+04-21 10:23:49.543   663  1407 W ActivityTaskManager: callingPackage for (uid=2000, pid=25521) has no WPC
+04-21 10:23:49.543   663  1407 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@49a6eab does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+04-21 10:23:49.547   526  1479 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for binder (0x77289ee51ea0) with descriptor: '(not cached)'
+04-21 10:23:49.549   663  1407 V ActivityTaskManager: TaskLaunchParamsModifier: phase=3 task=Task{3be4e03 #26 type=standard A=10230:com.aidemoi.app} activity=ActivityRecord{39071410 u0 com.aidemoi.app/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@50248798 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@50248798 skip-bounds-fullscreen
+04-21 10:23:49.549   663  1407 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=com.aidemoi.app/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=0
+04-21 10:23:49.550  1112  1157 V WindowManagerShell: Transition requested (#191): android.os.BinderProxy@75e71a4 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=26 effectiveUid=10230 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.aidemoi.app/.MainActivity } baseActivity=ComponentInfo{com.aidemoi.app/com.aidemoi.app.MainActivity} topActivity=ComponentInfo{com.aidemoi.app/com.aidemoi.app.MainActivity} origActivity=null realActivity=ComponentInfo{com.aidemoi.app/com.aidemoi.app.MainActivity} realActivityIsAppLockEnabled=false numActivities=1 lastActiveTime=16948637 supportsMultiWindow=true supportsMultiWindowWithoutConstraints=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@2ae8b0d} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 159 - 0, 0) topActivityInfo=ActivityInfo{bbd5ac2 com.aidemoi.app.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isInteractive=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null leafTaskBoundsFromOptions= false capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 159 - 1344, 2920) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransitionInfo = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, fullscreenRequestChange = null, flags = 0, debugId = 191 }
+04-21 10:23:49.550  1112  1157 W DisconnectHandler: No disconnect change found in the transition, not handling request.
+04-21 10:23:49.550  1112  1157 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask's display doesn't support desktop mode
+04-21 10:23:49.550  1112  1157 D ShellSplitScreen: logExit: no-op, mLoggerSessionId is null
+04-21 10:23:49.550   663   691 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@49a6eab does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+04-21 10:23:49.549  1418  1418 D RecentsView: onTaskDisplayChanged: 26, new displayId = 0
+04-21 10:23:49.550  1418  1418 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_window_focused|state_user_active] -[]
+04-21 10:23:49.558  1112  1157 V RecentTasksController: Notify recent tasks changed
+04-21 10:23:49.558  1112  1157 D ShellDesktopMode: DesktopRepository(0): Removes freeform task: taskId=25
+04-21 10:23:49.558   663  1097 W InputChannel-JNI: Channel already disposed.
+04-21 10:23:49.558  1112  1157 W ShellDesktopMode: DesktopRepository(0): No display id found for task: taskId=25
+04-21 10:23:49.559  1112  1157 V RecentTasksController: Notify recent tasks changed
+04-21 10:23:49.558  1418  1418 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_window_focused] -[state_user_active]
+04-21 10:23:49.558  1418  1418 D BaseActivity: Launcher flags updated: [state_started|state_window_focused] -[state_resumed|state_deferred_resumed]
+04-21 10:23:49.559  1418  1418 W SplitSelectStateCtor: Missing session instanceIds
+04-21 10:23:49.559  1418  1418 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+04-21 10:23:49.562   663  1097 I AppsFilter: interaction: PackageSetting{c09621 com.nexora.mobile/10229} -> PackageSetting{c4ee20a com.aidemoi.app/10230} BLOCKED
+04-21 10:23:49.564  1112  1157 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=567
+04-21 10:23:49.567   663  1097 V WindowManager: Defer transition id=191 for TaskFragmentTransaction=android.os.Binder@20114d6
+04-21 10:23:49.568  1112  1244 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda13@625f872
+04-21 10:23:49.567   468   468 D Zygote  : Forked child process 25525
+04-21 10:23:49.569   663   698 I ActivityManager: Start proc 25525:com.aidemoi.app/u0a230 for next-top-activity {com.aidemoi.app/com.aidemoi.app.MainActivity}
+04-21 10:23:49.569   663  1788 D WindowManager: setClientSurface Surface(name=VRI-Splash Screen com.aidemoi.app#1734)/@0x4c22d29 for 8d705ac Splash Screen com.aidemoi.app
+04-21 10:23:49.570  1418  1418 D RecentTasksList: invalidateLoadedTasks - previous requestLoadId: -1
+04-21 10:23:49.570  1418  1418 D RecentTasksList: invalidateLoadedTasks - previous requestLoadId: -1
+04-21 10:23:49.572   663  1097 V WindowManager: Continue transition id=191 for TaskFragmentTransaction=android.os.Binder@20114d6
+04-21 10:23:49.573  1112  1244 I Surface : Creating surface for consumer unnamed-1112-43 with slotExpansion=1 for 64 slots
+04-21 10:23:49.574   663  1407 D CoreBackPreview: Window{8d705ac u0 Splash Screen com.aidemoi.app}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@c9d464f, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+04-21 10:23:49.574  1112  1244 I Surface : Creating surface for consumer VRI[app]#43(BLAST Consumer)43 with slotExpansion=1 for 64 slots
+04-21 10:23:49.580 25525 25525 I Zygote  : Process 25525 created for com.aidemoi.app
+04-21 10:23:49.580 25525 25525 I com.aidemoi.app: Late-enabling -Xcheck:jni
+04-21 10:23:49.604 25525 25525 I com.aidemoi.app: Using generational CollectorTypeCMC GC.
+04-21 10:23:49.605 25525 25525 W com.aidemoi.app: Unexpected CPU variant for x86: x86_64.
+04-21 10:23:49.605 25525 25525 W com.aidemoi.app: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, lunarlake, default
+04-21 10:23:49.628   663  1407 E AppOps  : attributionTag VCN not declared in manifest of android
+04-21 10:23:49.634  1847  1854 I adbd    : jdwp connection from 25525
+04-21 10:23:49.639 25525 25525 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok

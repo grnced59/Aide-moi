@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aide Moi — Présentation du projet</title>
+<link rel="icon" type="image/png" href="./logo/favicon.png">
+<style>
+  :root{
+    --violet:#534AB7;
+    --violet-dark:#3C3489;
+    --violet-soft:#EEEDFE;
+    --violet-border:#AFA9EC;
+    --bg:#f5f3ff;
+    --text:#1f1f25;
+    --green:#9FE1CB;   --green-d:#085041;
+    --peach:#F5C4B3;   --peach-d:#712B13;
+    --blue:#B5D4F4;    --blue-d:#0C447C;
+    --sand:#FAEEDA;    --sand-d:#633806;
+    --pink:#FBEAF0;    --pink-d:#72243E;
+    --lime:#C0DD97;    --lime-d:#173404;
+    --red:#F09595;     --red-d:#791F1F;
+    --amber:#FAC775;   --amber-d:#412402;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);
+    overflow:hidden;
+  }
+
+  /* Deck */
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+  .slide{
+    position:absolute;inset:0;
+    display:none;flex-direction:column;
+    padding:clamp(24px,4vw,56px) clamp(24px,5vw,80px);
+    opacity:0;transform:translateY(12px);
+    transition:opacity .35s ease, transform .35s ease;
+    overflow:auto;
+  }
+  .slide.active{display:flex;opacity:1;transform:none;}
+  .slide h1{font-size:clamp(32px,4.6vw,60px);color:var(--violet-dark);font-weight:700;letter-spacing:-.01em;line-height:1.1;}
+  .slide h2{font-size:clamp(24px,3vw,40px);color:var(--violet-dark);font-weight:700;margin-bottom:18px;letter-spacing:-.01em;}
+  .slide h3{font-size:clamp(18px,1.8vw,22px);color:var(--violet);font-weight:600;}
+  .slide p, .slide li{font-size:clamp(15px,1.35vw,19px);line-height:1.55;}
+  .kicker{
+    display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--violet);
+    background:var(--violet-soft);padding:6px 12px;border-radius:20px;margin-bottom:14px;
+  }
+
+  /* Header bar (slides internes) */
+  .topbar{display:flex;align-items:center;gap:14px;margin-bottom:26px;}
+  .topbar .logo{width:48px;height:48px;border-radius:14px;object-fit:contain;background:var(--violet-soft);padding:6px;}
+  .topbar .title{font-size:16px;font-weight:700;color:var(--violet-dark);}
+  .topbar .sub{font-size:12px;color:var(--violet);}
+
+  /* Hero / slide 1 */
+  .hero{justify-content:center;align-items:center;text-align:center;gap:18px;}
+  .hero .logo-big{
+    width:clamp(120px,14vw,180px);height:clamp(120px,14vw,180px);
+    border-radius:32px;background:var(--violet-soft);
+    display:flex;align-items:center;justify-content:center;padding:14px;
+    box-shadow:0 14px 40px rgba(83,74,183,.18);
+  }
+  .hero .logo-big img{width:100%;height:100%;object-fit:contain;}
+  .hero h1{font-size:clamp(44px,6vw,84px);}
+  .hero .tagline{font-size:clamp(18px,1.8vw,24px);color:var(--violet);max-width:760px;}
+  .hero .authors{margin-top:18px;color:#6a63c3;font-size:14px;letter-spacing:.08em;}
+
+  /* Grid & cards */
+  .grid{display:grid;gap:18px;}
+  .g-2{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .g-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .g-4{grid-template-columns:repeat(4,minmax(0,1fr));}
+  @media (max-width:900px){.g-3,.g-4{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (max-width:600px){.g-2,.g-3,.g-4{grid-template-columns:1fr;}}
+  .card{
+    border-radius:20px;padding:22px 22px;
+    display:flex;flex-direction:column;gap:8px;
+    box-shadow:0 6px 18px rgba(31,31,37,.06);
+  }
+  .card .ico{font-size:30px;line-height:1;margin-bottom:4px;}
+  .card .t{font-size:17px;font-weight:700;letter-spacing:-.01em;}
+  .card .d{font-size:14px;line-height:1.5;opacity:.92;}
+
+  /* Color variants */
+  .c-violet{background:var(--violet-soft);color:var(--violet-dark);}
+  .c-green{background:var(--green);color:var(--green-d);}
+  .c-peach{background:var(--peach);color:var(--peach-d);}
+  .c-blue{background:var(--blue);color:var(--blue-d);}
+  .c-sand{background:var(--sand);color:var(--sand-d);}
+  .c-pink{background:var(--pink);color:var(--pink-d);}
+  .c-lime{background:var(--lime);color:var(--lime-d);}
+  .c-red{background:var(--red);color:var(--red-d);}
+  .c-amber{background:var(--amber);color:var(--amber-d);}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  ul.clean li{display:flex;gap:10px;align-items:flex-start;}
+  ul.clean li::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--violet);margin-top:9px;flex-shrink:0;}
+
+  .two-col{display:grid;grid-template-columns:1.1fr 1fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+  /* Mock phone */
+  .phone{
+    width:280px;max-width:100%;aspect-ratio:9/18;
+    background:#fff;border-radius:36px;padding:14px;
+    border:8px solid #2a2540;box-shadow:0 30px 60px rgba(42,37,64,.25);
+    margin:0 auto;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .phone .pbar{background:var(--violet-soft);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .phone .pbar .plogo{width:38px;height:38px;border-radius:10px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--lime-d);}
+  .phone .pbar .pt{font-size:13px;font-weight:700;color:var(--violet-dark);}
+  .phone .pbar .ps{font-size:10px;color:var(--violet);}
+  .phone .chips{display:flex;gap:6px;margin-bottom:10px;}
+  .phone .chip{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .phone .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px;}
+  .phone .tab{font-size:9px;padding:6px 2px;border-radius:8px;text-align:center;font-weight:600;}
+  .phone .blk{border-radius:12px;padding:10px;font-size:11px;margin-bottom:8px;}
+  .phone .blk b{display:block;font-size:12px;margin-bottom:4px;}
+
+  /* Controls */
+  .controls{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:10px;z-index:10;
+    background:#fff;border:1px solid var(--violet-border);
+    border-radius:999px;padding:6px 10px;
+    box-shadow:0 8px 24px rgba(83,74,183,.18);
+  }
+  .controls button{
+    border:none;background:var(--violet-soft);color:var(--violet-dark);
+    width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700;
+  }
+  .controls button:hover{background:var(--violet);color:#fff;}
+  .counter{font-size:13px;color:var(--violet-dark);font-weight:600;padding:0 6px;min-width:56px;text-align:center;}
+
+  .progress{position:fixed;top:0;left:0;right:0;height:4px;background:transparent;z-index:11;}
+  .progress .bar{height:100%;width:0;background:linear-gradient(90deg,var(--violet),#9f97ff);transition:width .3s ease;}
+
+  .footer-note{position:fixed;bottom:14px;right:18px;font-size:11px;color:#8a83d3;letter-spacing:.06em;}
+  @media (max-width:700px){.footer-note{display:none;}}
+
+  /* Stat bubbles */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:20px;}
+  @media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}}
+  .stat{background:#fff;border:1.5px solid var(--violet-soft);border-radius:18px;padding:18px;text-align:center;}
+  .stat .n{font-size:clamp(26px,3vw,40px);font-weight:800;color:var(--violet-dark);}
+  .stat .l{font-size:12px;color:var(--violet);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;}
+
+  /* CTA */
+  .cta{background:var(--violet-dark);color:#fff;border-radius:24px;padding:28px 32px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+  .cta h2{color:#fff;margin:0;}
+  .cta p{color:#d9d5ff;}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--violet-dark);padding:12px 20px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="bar" id="progress-bar"></div></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. HERO -->
+  <section class="slide hero active">
+    <div class="logo-big">
+      <img src="./logo/logo.png" alt="Logo Aide Moi" onerror="this.style.display='none';this.parentNode.innerHTML='<div style=&quot;font-size:60px;font-weight:800;color:var(--violet-dark);&quot;>AM</div>'">
+    </div>
+    <div class="kicker">Projet · 2026</div>
+    <h1>Aide Moi</h1>
+    <p class="tagline">L'application qui accompagne les parents et aidants d'enfants en situation de handicap, au quotidien comme dans l'urgence.</p>
+    <div class="authors">PRÉSENTATION DU PROJET</div>
+  </section>
+
+  <!-- 2. PROBLÈME -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Le problème</div></div>
+    </div>
+    <span class="kicker">Constat</span>
+    <h2>Le quotidien d'un aidant est une charge mentale constante</h2>
+    <div class="grid g-3" style="margin-top:10px;">
+      <div class="card c-peach">
+        <div class="ico">📚</div>
+        <div class="t">Informations éparpillées</div>
+        <div class="d">Ordonnances, RDV, régimes, contacts médicaux : tout est dispersé entre carnets, SMS et mails.</div>
+      </div>
+      <div class="card c-sand">
+        <div class="ico">🔁</div>
+        <div class="t">Transmissions répétées</div>
+        <div class="d">À chaque nouvel intervenant (IME, hôpital, relais), il faut tout réexpliquer depuis le début.</div>
+      </div>
+      <div class="card c-red">
+        <div class="ico">🚨</div>
+        <div class="t">Urgence mal préparée</div>
+        <div class="d">En cas de crise, les consignes vitales et contacts sont rarement accessibles en un geste.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SOLUTION -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">La solution</div></div>
+    </div>
+    <span class="kicker">Notre réponse</span>
+    <h2>Un carnet de vie numérique, centré sur l'enfant</h2>
+    <div class="two-col" style="margin-top:10px;">
+      <div>
+        <ul class="clean">
+          <li><span><b>Tout au même endroit</b> — profil, soins, RDV, alimentation, journal de bord.</span></li>
+          <li><span><b>Pensé pour les aidants</b> — navigation claire, grandes zones tactiles, couleurs apaisantes.</span></li>
+          <li><span><b>Prêt pour l'urgence</b> — un onglet dédié pour les contacts vitaux, ordonnances et consignes.</span></li>
+          <li><span><b>Facilement partageable</b> — génération d'un récapitulatif PDF pour les relais et intervenants.</span></li>
+          <li><span><b>Multi-enfants</b> — un profil par enfant, on bascule d'un simple geste.</span></li>
+        </ul>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <div class="pbar">
+          <div class="plogo">AM</div>
+          <div><div class="pt">Aide Moi</div><div class="ps">Profil de Hugo</div></div>
+        </div>
+        <div class="chips">
+          <div class="chip" style="background:#C0DD97;">🧒</div>
+          <div class="chip" style="background:#FAC775;">👧</div>
+          <div class="chip" style="background:#EEEDFE;color:var(--violet);border:2px dashed var(--violet-border);">＋</div>
+        </div>
+        <div class="tabs">
+          <div class="tab" style="background:var(--violet-soft);color:var(--violet-dark);">Profil</div>
+          <div class="tab" style="background:#E1F5EE;color:var(--green-d);">Tâches</div>
+          <div class="tab" style="background:#FCEBEB;color:var(--red-d);">Médic.</div>
+        </div>
+        <div class="blk c-green"><b>Aime</b>Musique douce · câlins · bain tiède</div>
+        <div class="blk c-peach"><b>Évite</b>Bruits forts · lumière vive</div>
+        <div class="blk c-red"><b>🚨 Urgence</b>SAMU · Dr Moreau · Pharmacie</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FONCTIONNALITÉS CLÉS -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Fonctionnalités</div></div>
+    </div>
+    <span class="kicker">10 espaces pensés pour l'aidant</span>
+    <h2>Toute la vie de l'enfant, à portée de pouce</h2>
+    <div class="grid g-4" style="margin-top:10px;">
+      <div class="card c-violet"><div class="ico">👤</div><div class="t">Profil</div><div class="d">Aime / n'aime pas, besoins spécifiques.</div></div>
+      <div class="card c-green"><div class="ico">✅</div><div class="t">Tâches</div><div class="d">Routine du jour, cochable en un geste.</div></div>
+      <div class="card c-sand"><div class="ico">📅</div><div class="t">Séances &amp; RDV</div><div class="d">Kiné, ortho, neuropédiatre, IME…</div></div>
+      <div class="card c-red"><div class="ico">💊</div><div class="t">Médicaments</div><div class="d">Traitements, doses, moments de prise.</div></div>
+      <div class="card c-blue"><div class="ico">📞</div><div class="t">Contacts</div><div class="d">Intervenants médicaux et éducatifs.</div></div>
+      <div class="card c-pink"><div class="ico">🎵</div><div class="t">Médias</div><div class="d">Vidéos et musiques apaisantes favorites.</div></div>
+      <div class="card c-lime"><div class="ico">📓</div><div class="t">Journal</div><div class="d">Humeur du jour et notes libres.</div></div>
+      <div class="card c-amber"><div class="ico">🍽</div><div class="t">Alimentation</div><div class="d">Aliments OK/refusés, repas, hydratation.</div></div>
+      <div class="card" style="background:#ED93B1;color:#4B1528;"><div class="ico">📋</div><div class="t">Liaison</div><div class="d">Messages de transmission entre aidants.</div></div>
+      <div class="card c-red" style="border:2px solid #E24B4A;"><div class="ico">🚨</div><div class="t">Urgence</div><div class="d">Contacts, ordonnances et consignes vitales.</div></div>
+      <div class="card c-violet"><div class="ico">🧾</div><div class="t">Récap PDF</div><div class="d">Export partageable en un clic.</div></div>
+      <div class="card c-green"><div class="ico">👨‍👩‍👧</div><div class="t">Multi-enfants</div><div class="d">Un profil par enfant, bascule instantanée.</div></div>
+    </div>
+  </section>
+
+  <!-- 5. FOCUS URGENCE -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Focus</div></div>
+    </div>
+    <span class="kicker" style="background:#FCEBEB;color:var(--red-d);">🚨 Onglet Urgence</span>
+    <h2>En cas de crise, chaque seconde compte</h2>
+    <div class="two-col">
+      <div>
+        <ul class="clean">
+          <li><b>Contacts d'urgence cliquables</b> — SAMU, neuropédiatre, pharmacie : appel direct.</li>
+          <li><b>Ordonnances numérisées</b> — accessibles hors-connexion.</li>
+          <li><b>Consignes vitales</b> — allergies, antécédents, conduites à tenir.</li>
+          <li><b>Documents médicaux</b> — protocoles, comptes-rendus, classés.</li>
+          <li><b>Accessible à tout relais</b> — baby-sitter, famille, IME, pompiers.</li>
+        </ul>
+      </div>
+      <div class="card c-red" style="padding:24px;">
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1.5px solid rgba(255,255,255,.4);">
+          <div style="width:38px;height:38px;border-radius:50%;background:#F7C1C1;display:flex;align-items:center;justify-content:center;">🏥</div>
+          <div style="flex:1;"><div style="font-weight:700;">SAMU</div><div style="font-size:12px;">15</div></div>
+          <div style="background:#E24B4A;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;">Appeler</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1.5px solid rgba(255,255,255,.4);">
+          <div style="width:38px;height:38px;border-radius:50%;background:#F7C1C1;display:flex;align-items:center;justify-content:center;">👩‍⚕️</div>
+          <div style="flex:1;"><div style="font-weight:700;">Dr Moreau</div><div style="font-size:12px;">Neuropédiatre</div></div>
+          <div style="background:#E24B4A;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;">Appeler</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 0;">
+          <div style="width:38px;height:38px;border-radius:50%;background:#F7C1C1;display:flex;align-items:center;justify-content:center;">💊</div>
+          <div style="flex:1;"><div style="font-weight:700;">Pharmacie de garde</div><div style="font-size:12px;">3237</div></div>
+          <div style="background:#E24B4A;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;">Appeler</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. POUR QUI -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Utilisateurs</div></div>
+    </div>
+    <span class="kicker">Pour qui ?</span>
+    <h2>Une app pensée pour tous les cercles d'aidants</h2>
+    <div class="grid g-3" style="margin-top:10px;">
+      <div class="card c-violet"><div class="ico">👨‍👩‍👧</div><div class="t">Parents &amp; famille</div><div class="d">Garder une vue d'ensemble et transmettre sans stress.</div></div>
+      <div class="card c-blue"><div class="ico">🏥</div><div class="t">Intervenants médicaux</div><div class="d">Accéder aux infos utiles avant chaque séance.</div></div>
+      <div class="card c-green"><div class="ico">🏫</div><div class="t">IME &amp; éducateurs</div><div class="d">Connaître l'enfant au-delà de son dossier médical.</div></div>
+      <div class="card c-sand"><div class="ico">🧑‍⚕️</div><div class="t">Relais ponctuels</div><div class="d">Baby-sitter, aide à domicile, urgences.</div></div>
+      <div class="card c-pink"><div class="ico">💞</div><div class="t">Familles d'accueil</div><div class="d">Continuité parfaite du suivi, même à distance.</div></div>
+      <div class="card c-amber"><div class="ico">🧑‍🏫</div><div class="t">Associations</div><div class="d">Outil de coordination entre bénévoles.</div></div>
+    </div>
+  </section>
+
+  <!-- 7. TECHNO -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Technique</div></div>
+    </div>
+    <span class="kicker">Sous le capot</span>
+    <h2>Simple, robuste, respectueux des données</h2>
+    <div class="grid g-4" style="margin-top:10px;">
+      <div class="card c-violet"><div class="ico">📱</div><div class="t">Web &amp; Android</div><div class="d">HTML/CSS/JS, packagée via Capacitor pour Android.</div></div>
+      <div class="card c-green"><div class="ico">🔒</div><div class="t">Stockage local</div><div class="d">Les données restent sur l'appareil de l'aidant.</div></div>
+      <div class="card c-blue"><div class="ico">📶</div><div class="t">Hors-connexion</div><div class="d">Tout reste consultable sans internet.</div></div>
+      <div class="card c-sand"><div class="ico">🧾</div><div class="t">Export PDF</div><div class="d">Via jsPDF, un récap propre à partager.</div></div>
+      <div class="card c-pink"><div class="ico">🎨</div><div class="t">UI accessible</div><div class="d">Contrastes forts, zones tactiles larges.</div></div>
+      <div class="card c-lime"><div class="ico">⚡</div><div class="t">Léger</div><div class="d">App mono-fichier, démarrage instantané.</div></div>
+      <div class="card c-amber"><div class="ico">🧩</div><div class="t">Extensible</div><div class="d">Architecture modulaire par onglets.</div></div>
+      <div class="card c-red"><div class="ico">🛟</div><div class="t">Prêt usage réel</div><div class="d">Pensée avec des cas concrets d'aidants.</div></div>
+    </div>
+  </section>
+
+  <!-- 8. ROADMAP -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Feuille de route</div></div>
+    </div>
+    <span class="kicker">Ce qui arrive</span>
+    <h2>Aujourd'hui · Demain · Après</h2>
+    <div class="grid g-3" style="margin-top:10px;">
+      <div class="card c-green">
+        <div class="ico">✅</div>
+        <div class="t">Déjà en place</div>
+        <ul class="clean" style="margin-top:6px;">
+          <li style="font-size:14px;">10 onglets fonctionnels</li>
+          <li style="font-size:14px;">Multi-profils enfants</li>
+          <li style="font-size:14px;">Export PDF récapitulatif</li>
+          <li style="font-size:14px;">Build Android (Capacitor)</li>
+        </ul>
+      </div>
+      <div class="card c-sand">
+        <div class="ico">🛠</div>
+        <div class="t">En cours</div>
+        <ul class="clean" style="margin-top:6px;">
+          <li style="font-size:14px;">Ajustements UI &amp; accessibilité</li>
+          <li style="font-size:14px;">Notifications locales (rappels)</li>
+          <li style="font-size:14px;">Photos dans les documents</li>
+        </ul>
+      </div>
+      <div class="card c-violet">
+        <div class="ico">✨</div>
+        <div class="t">Vision</div>
+        <ul class="clean" style="margin-top:6px;">
+          <li style="font-size:14px;">Partage sécurisé entre aidants</li>
+          <li style="font-size:14px;">Synchronisation optionnelle</li>
+          <li style="font-size:14px;">Version iOS</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. IMPACT -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Impact</div></div>
+    </div>
+    <span class="kicker">Pourquoi ça compte</span>
+    <h2>Moins de charge mentale, plus de temps ensemble</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">10</div><div class="l">Espaces dédiés</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">App pour tout centraliser</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">Donnée envoyée sans accord</div></div>
+      <div class="stat"><div class="n">∞</div><div class="l">Enfants pris en charge</div></div>
+    </div>
+    <p style="margin-top:28px;font-size:clamp(16px,1.5vw,20px);color:var(--violet-dark);max-width:820px;">
+      « L'objectif n'est pas de remplacer le lien humain, mais de libérer l'aidant de la logistique
+      pour qu'il puisse se concentrer sur l'essentiel : l'enfant. »
+    </p>
+  </section>
+
+  <!-- 10. CTA -->
+  <section class="slide">
+    <div class="topbar">
+      <img class="logo" src="./logo/favicon.png" alt="" onerror="this.style.display='none'">
+      <div><div class="title">Aide Moi</div><div class="sub">Et maintenant ?</div></div>
+    </div>
+    <span class="kicker">Merci</span>
+    <h2>Découvrez Aide Moi en direct</h2>
+    <div class="cta" style="margin-top:10px;">
+      <div style="flex:1;min-width:260px;">
+        <h2 style="font-size:clamp(22px,2.4vw,32px);">Envie d'essayer ?</h2>
+        <p style="margin-top:8px;">La démo complète est disponible dans le navigateur, et une version Android est prête à être installée.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="btn" href="./index.html">▶️ Lancer la démo</a>
+        <a class="btn" style="background:var(--lime);color:var(--lime-d);" href="./AideMoi_11.html">📱 Version standalone</a>
+      </div>
+    </div>
+    <div style="margin-top:28px;text-align:center;color:var(--violet);font-size:13px;letter-spacing:.08em;">
+      AIDE MOI · UN PROJET POUR CEUX QUI AIDENT
+    </div>
+  </section>
+
+</div>
+
+<div class="controls" role="navigation" aria-label="Navigation des diapositives">
+  <button id="prev" aria-label="Précédent">‹</button>
+  <span class="counter" id="counter">1 / 10</span>
+  <button id="next" aria-label="Suivant">›</button>
+</div>
+
+<div class="footer-note">← → · Espace · F plein écran</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var idx = 0;
+  var bar = document.getElementById('progress-bar');
+  var counter = document.getElementById('counter');
+
+  function go(i){
+    idx = Math.max(0, Math.min(total-1, i));
+    slides.forEach(function(s,n){ s.classList.toggle('active', n===idx); });
+    counter.textContent = (idx+1)+' / '+total;
+    bar.style.width = ((idx+1)/total*100)+'%';
+  }
+  document.getElementById('prev').addEventListener('click', function(){ go(idx-1); });
+  document.getElementById('next').addEventListener('click', function(){ go(idx+1); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') { e.preventDefault(); go(idx+1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp') { e.preventDefault(); go(idx-1); }
+    else if(e.key==='Home'){ go(0); }
+    else if(e.key==='End'){ go(total-1); }
+    else if(e.key==='f'||e.key==='F'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  // Swipe
+  var tx=0;
+  document.addEventListener('touchstart', function(e){ tx=e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e){
+    var dx=e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx)>50){ go(idx + (dx<0?1:-1)); }
+  });
+  go(0);
+})();
+</script>
+
+</body>
+</html>

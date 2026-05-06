@@ -1,0 +1,22 @@
+{
+  "name": "aide-moi-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aide Moi - Web app packagée Android avec Capacitor",
+  "scripts": {
+    "cap:sync": "npx cap sync android",
+    "cap:add:android": "npx cap add android",
+    "cap:open": "npx cap open android",
+    "android:init": "npm run cap:add:android ; npm run cap:sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "jspdf": "^4.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

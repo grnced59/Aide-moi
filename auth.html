@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#EEEDFE">
+<link rel="icon" type="image/png" href="./logo/favicon.png">
+<link rel="apple-touch-icon" href="./logo/favicon.png">
+<title>Aide Moi — Connexion</title>
+<style>
+:root{--bg-app:#f5f3ff;--text-dark:#1f1f25;--purple:#534AB7;--purple-light:#EEEDFE;--purple-mid:#AFA9EC;--green:#1D9E75;--red:#E24B4A;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-dark);-webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior-y:contain;min-height:100dvh;display:flex;flex-direction:column;}
+.page{max-width:440px;margin:0 auto;padding:calc(1.5rem + env(safe-area-inset-top)) 1rem calc(1.5rem + env(safe-area-inset-bottom));width:100%;flex:1;display:flex;flex-direction:column;}
+
+/* ── Banner ── */
+.banner{background:#EEEDFE;border-radius:16px;padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:14px;}
+.logo-img{width:56px;height:56px;object-fit:contain;flex-shrink:0;}
+.app-title{font-size:20px;font-weight:600;color:#3C3489;}
+.app-sub{font-size:12px;color:#534AB7;margin-top:2px;}
+
+/* ── Card ── */
+.card{background:white;border-radius:20px;padding:1.5rem;box-shadow:0 2px 12px rgba(83,74,183,.08);}
+
+/* ── Tabs login/register ── */
+.tabs{display:flex;gap:0;margin-bottom:1.25rem;background:#f0efff;border-radius:12px;padding:3px;}
+.tab-btn{flex:1;padding:9px;border:none;background:transparent;border-radius:10px;font-size:13px;font-weight:500;color:#7670C4;cursor:pointer;transition:all .2s;}
+.tab-btn.active{background:white;color:#3C3489;font-weight:600;box-shadow:0 1px 4px rgba(83,74,183,.15);}
+
+/* ── Form ── */
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:12px;font-weight:600;color:#534AB7;margin-bottom:6px;letter-spacing:.03em;text-transform:uppercase;}
+.field input, .field select{width:100%;padding:12px 14px;border:2px solid #E8E6FF;border-radius:12px;font-size:15px;font-family:inherit;color:var(--text-dark);background:white;outline:none;transition:border-color .2s;}
+.field input:focus, .field select:focus{border-color:#534AB7;}
+.field input.error{border-color:#E24B4A;}
+
+/* ── Bouton principal ── */
+.btn-primary{width:100%;padding:14px;border:none;border-radius:14px;background:#534AB7;color:white;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:opacity .2s;margin-top:.25rem;}
+.btn-primary:active{opacity:.85;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── Bouton Google ── */
+.btn-google{width:100%;padding:13px;border:2px solid #E8E6FF;border-radius:14px;background:white;color:#3C3489;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:border-color .2s;margin-bottom:1rem;}
+.btn-google:hover{border-color:#534AB7;}
+.google-icon{width:20px;height:20px;flex-shrink:0;}
+
+/* ── Séparateur ── */
+.sep{display:flex;align-items:center;gap:10px;margin:1rem 0;color:#AFA9EC;font-size:12px;}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:#E8E6FF;}
+
+/* ── Liens ── */
+.link{color:#534AB7;font-size:13px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+.forgot-row{text-align:right;margin-top:-6px;margin-bottom:10px;}
+
+/* ── Select rôle ── */
+.role-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23534AB7' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+
+/* ── Messages erreur / succès ── */
+.msg{padding:10px 14px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:1rem;display:none;}
+.msg.error{background:#FCEBEB;color:#A32D2D;display:block;}
+.msg.success{background:#E1F5EE;color:#085041;display:block;}
+.msg.info{background:#EEEDFE;color:#3C3489;display:block;}
+
+/* ── Indicateur force mot de passe ── */
+.pwd-strength{height:3px;border-radius:4px;margin-top:6px;background:#E8E6FF;overflow:hidden;}
+.pwd-strength-bar{height:100%;border-radius:4px;transition:width .3s,background .3s;width:0;}
+
+/* ── Loading spinner ── */
+.spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Footer ── */
+.footer-note{text-align:center;font-size:11px;color:#AFA9EC;margin-top:1rem;line-height:1.5;}
+.footer-note a{color:#534AB7;text-decoration:none;}
+
+/* ── Overlay de chargement initial ── */
+#init-loading{position:fixed;inset:0;background:var(--bg-app);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:9999;}
+#init-loading .logo-spin{width:60px;height:60px;object-fit:contain;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.95)}}
+#init-loading p{font-size:13px;color:#534AB7;font-weight:500;}
+</style>
+</head>
+<body>
+
+<!-- Chargement initial -->
+<div id="init-loading">
+  <img class="logo-spin" src="./logo/logo.png" alt="">
+  <p>Chargement…</p>
+</div>
+
+<div class="page" id="auth-page" style="display:none;">
+
+  <!-- Banner -->
+  <div class="banner">
+    <img class="logo-img" src="./logo/logo.png" alt="Logo Aide Moi">
+    <div>
+      <div class="app-title">Aide Moi</div>
+      <div class="app-sub">Suivi bienveillant du quotidien</div>
+    </div>
+  </div>
+
+  <!-- Carte principale -->
+  <div class="card">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Connexion</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Créer un compte</button>
+    </div>
+
+    <!-- Message global -->
+    <div class="msg" id="global-msg"></div>
+
+    <!-- ── FORMULAIRE CONNEXION ── -->
+    <div id="form-login">
+      <!-- Google -->
+      <button class="btn-google" id="btn-google-login" onclick="doGoogleAuth()">
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continuer avec Google
+      </button>
+
+      <div class="sep">ou</div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="prenom@exemple.fr" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="forgot-row">
+        <span class="link" onclick="switchTab('forgot')">Mot de passe oublié ?</span>
+      </div>
+      <button class="btn-primary" id="btn-login" onclick="doLogin()">Se connecter</button>
+    </div>
+
+    <!-- ── FORMULAIRE INSCRIPTION ── -->
+    <div id="form-register" style="display:none;">
+      <button class="btn-google" id="btn-google-register" onclick="doGoogleAuth()">
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continuer avec Google
+      </button>
+
+      <div class="sep">ou avec un email</div>
+
+      <div class="field">
+        <label>Prénom et nom</label>
+        <input type="text" id="reg-name" placeholder="Marie Dupont" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="prenom@exemple.fr" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Rôle</label>
+        <select id="reg-role" class="role-select">
+          <option value="educateur">Éducateur / Éducatrice</option>
+          <option value="therapeute">Thérapeute</option>
+          <option value="famille">Famille / Parent</option>
+          <option value="chef_service">Chef de service</option>
+          <option value="partenaire">Partenaire extérieur</option>
+          <option value="admin">Administrateur</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="reg-password" placeholder="8 caractères minimum" autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
+        <div class="pwd-strength"><div class="pwd-strength-bar" id="pwd-bar"></div></div>
+      </div>
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" id="reg-password2" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <button class="btn-primary" id="btn-register" onclick="doRegister()">Créer mon compte</button>
+    </div>
+
+    <!-- ── MOT DE PASSE OUBLIÉ ── -->
+    <div id="form-forgot" style="display:none;">
+      <p style="font-size:14px;color:#534AB7;margin-bottom:1rem;line-height:1.5;">
+        Entrez votre adresse email. Vous recevrez un lien pour choisir un nouveau mot de passe.
+      </p>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="forgot-email" placeholder="prenom@exemple.fr" autocomplete="email" onkeydown="if(event.key==='Enter')doForgot()">
+      </div>
+      <button class="btn-primary" id="btn-forgot" onclick="doForgot()">Envoyer le lien</button>
+      <div style="text-align:center;margin-top:1rem;">
+        <span class="link" onclick="switchTab('login')">← Retour à la connexion</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    En utilisant Aide Moi, vous acceptez notre politique de confidentialité.<br>
+    Données hébergées en Europe · Conformité RGPD
+  </div>
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="./js/supabase-client.js"></script>
+<script src="./js/auth.js"></script>
+
+<script>
+// ── Initialisation ────────────────────────────────────────────────
+(async function init() {
+  // Si Supabase non configuré → affiche directement la page
+  if (!supabaseIsConfigured()) {
+    document.getElementById('init-loading').style.display = 'none';
+    document.getElementById('auth-page').style.display = 'flex';
+    showMsg('info', '⚙️ Supabase non configuré — remplissez js/supabase-client.js avec vos clés de projet.');
+    return;
+  }
+
+  // Gérer le callback OAuth (retour de Google)
+  var sb = getSupabaseClient();
+  var { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    await Auth.ensureProfile(session.user);
+    window.location.href = './index.html';
+    return;
+  }
+
+  document.getElementById('init-loading').style.display = 'none';
+  document.getElementById('auth-page').style.display = 'flex';
+})();
+
+// ── Changement d'onglet ──────────────────────────────────────────
+function switchTab(name) {
+  clearMsg();
+  ['login', 'register', 'forgot'].forEach(function (t) {
+    document.getElementById('form-' + t).style.display = 'none';
+    var btn = document.getElementById('tab-' + t);
+    if (btn) btn.classList.remove('active');
+  });
+  document.getElementById('form-' + name).style.display = 'block';
+  var activeBtn = document.getElementById('tab-' + name);
+  if (activeBtn) activeBtn.classList.add('active');
+}
+
+// ── Messages ─────────────────────────────────────────────────────
+function showMsg(type, text) {
+  var el = document.getElementById('global-msg');
+  el.className = 'msg ' + type;
+  el.textContent = text;
+}
+function clearMsg() {
+  var el = document.getElementById('global-msg');
+  el.className = 'msg';
+  el.textContent = '';
+}
+
+// ── Connexion email ──────────────────────────────────────────────
+async function doLogin() {
+  clearMsg();
+  var email = document.getElementById('login-email').value.trim();
+  var password = document.getElementById('login-password').value;
+  if (!email || !password) { showMsg('error', 'Email et mot de passe requis.'); return; }
+  var btn = document.getElementById('btn-login');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Connexion…';
+  var { data, error } = await Auth.signInEmail(email, password);
+  btn.disabled = false;
+  btn.textContent = 'Se connecter';
+  if (error) {
+    var msg = error.message.includes('Invalid') ? 'Email ou mot de passe incorrect.' : error.message;
+    showMsg('error', msg);
+    return;
+  }
+  window.location.href = './index.html';
+}
+
+// ── Inscription email ────────────────────────────────────────────
+async function doRegister() {
+  clearMsg();
+  var name = document.getElementById('reg-name').value.trim();
+  var email = document.getElementById('reg-email').value.trim();
+  var role = document.getElementById('reg-role').value;
+  var pw = document.getElementById('reg-password').value;
+  var pw2 = document.getElementById('reg-password2').value;
+
+  if (!name) { showMsg('error', 'Votre nom est requis.'); return; }
+  if (!email || !email.includes('@')) { showMsg('error', 'Email invalide.'); return; }
+  if (pw.length < 8) { showMsg('error', 'Le mot de passe doit contenir au moins 8 caractères.'); return; }
+  if (pw !== pw2) { showMsg('error', 'Les mots de passe ne correspondent pas.'); return; }
+
+  var btn = document.getElementById('btn-register');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Création du compte…';
+
+  var { data, error } = await Auth.signUpEmail(email, pw, name, role);
+  btn.disabled = false;
+  btn.textContent = 'Créer mon compte';
+
+  if (error) { showMsg('error', error.message); return; }
+
+  // Confirmation email nécessaire
+  showMsg('success', '✓ Compte créé ! Vérifiez votre boîte email pour confirmer votre adresse puis revenez vous connecter.');
+  switchTab('login');
+}
+
+// ── Google OAuth ─────────────────────────────────────────────────
+async function doGoogleAuth() {
+  clearMsg();
+  if (!supabaseIsConfigured()) {
+    showMsg('error', 'Supabase non configuré — remplissez js/supabase-client.js');
+    return;
+  }
+  var { error } = await Auth.signInWithGoogle();
+  if (error) showMsg('error', error.message);
+  // Si succès : Supabase redirige vers Google puis revient ici
+}
+
+// ── Mot de passe oublié ──────────────────────────────────────────
+async function doForgot() {
+  clearMsg();
+  var email = document.getElementById('forgot-email').value.trim();
+  if (!email) { showMsg('error', 'Entrez votre adresse email.'); return; }
+  var btn = document.getElementById('btn-forgot');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Envoi…';
+  var { error } = await Auth.resetPassword(email);
+  btn.disabled = false;
+  btn.textContent = 'Envoyer le lien';
+  if (error) { showMsg('error', error.message); return; }
+  showMsg('success', '✓ Email envoyé ! Vérifiez votre boîte (et les spams).');
+}
+
+// ── Force du mot de passe ────────────────────────────────────────
+function checkPasswordStrength(pw) {
+  var bar = document.getElementById('pwd-bar');
+  if (!bar) return;
+  var score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  var colors = ['#E24B4A', '#FAC775', '#9FE1CB', '#1D9E75'];
+  var widths = ['25%', '50%', '75%', '100%'];
+  bar.style.width = score > 0 ? widths[score - 1] : '0';
+  bar.style.background = score > 0 ? colors[score - 1] : 'transparent';
+}
+</script>
+</body>
+</html>

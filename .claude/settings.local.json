@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Read(//Users/cedricgarin/Library/Android/sdk/**)",
+      "Read(//opt/homebrew/share/**)",
+      "Bash(npx cap *)",
+      "Bash(open -a \"Android Studio\" \"/Users/cedricgarin/Documents/DEV aide moi /aide moi/android\")",
+      "Bash(python3 -m http.server 3000)",
+      "Bash(open \"http://localhost:3000\")",
+      "Bash(mkdir -p \"/Users/cedricgarin/Documents/DEV aide moi /aide moi/js\" \"/Users/cedricgarin/Documents/DEV aide moi /aide moi/supabase\" && echo \"Dossiers créés\")"
+    ],
+    "additionalDirectories": [
+      "/Users/cedricgarin/Documents/DEV aide moi /aide moi"
+    ]
+  }
+}
