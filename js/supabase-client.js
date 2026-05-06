@@ -4,8 +4,8 @@
 //  2. Créer un projet (région : EU Frankfurt pour RGPD)
 //  3. Settings → API → copier Project URL et anon key
 // ─────────────────────────────────────────────────────────────────
-var SUPABASE_URL = 'https://VOTRE_PROJECT_ID.supabase.co';
-var SUPABASE_ANON_KEY = 'VOTRE_ANON_KEY_ICI';
+var SUPABASE_URL = 'https://ykwrkfxvncxdnhagjdvf.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_Ir2tVC-WxawD8EnbPohqEQ_5TUnJ7NP';
 
 // Détecte si les clés sont encore les placeholders
 function supabaseIsConfigured() {
