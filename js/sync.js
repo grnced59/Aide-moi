@@ -183,11 +183,17 @@ var Sync = (function () {
         return;
       }
 
-      var allRows = [...(owned || [])];
+      var ownedIds = new Set((owned || []).map(function (r) { return r.id; }));
+      var allRows = (owned || []).map(function (r) {
+        return Object.assign({}, r, { _isShared: false });
+      });
       if (shared) {
         shared.forEach(function (row) {
-          if (row.children && !allRows.find(function (r) { return r.id === row.children.id; })) {
-            allRows.push(row.children);
+          if (row.children && !ownedIds.has(row.children.id)) {
+            allRows.push(Object.assign({}, row.children, {
+              _isShared: true,
+              _sharingPermission: row.permission || 'read'
+            }));
           }
         });
       }
@@ -203,6 +209,9 @@ var Sync = (function () {
         var d = row.data || {};
         return Object.assign({}, d, {
           _id: row.id,
+          _ownerId: row.created_by || null,
+          _isShared: row._isShared || false,
+          _sharingPermission: row._sharingPermission || null,
           prenom: row.prenom,
           age: row.age || '',
           diag: row.diag || '',
