@@ -1187,10 +1187,14 @@ function deleteProfile(){
   if(kids.length<=1){alert("Impossible de supprimer le seul profil existant.\n\nAjoutez d'abord un autre profil.");return;}
   var nom=kids[idx].prenom;
   if(!confirm("Supprimer le profil de "+nom+" ?\n\nToutes ses données seront définitivement effacées."))return;
+  var cloudId=k._id||null;
   kids.splice(idx,1);
   idx=Math.max(0,idx-1);
   saveData();render();
   dismissEditSheet();
+  if(cloudId&&supabaseIsConfigured()&&Auth.getCurrentUser()){
+    Sync.deleteFromCloud(cloudId).catch(function(){});
+  }
 }
 function exportData(){
   try{

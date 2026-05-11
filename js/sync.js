@@ -277,11 +277,24 @@ var Sync = (function () {
     setTimeout(function () { n.style.opacity = '0'; }, 3000);
   }
 
+  // ── Supprime une fiche de Supabase par son ID ────────────────
+  async function deleteFromCloud(id) {
+    var sb = getSupabaseClient();
+    var user = Auth.getCurrentUser();
+    if (!sb || !user || !id) return;
+    try {
+      await sb.from('children').delete().eq('id', id).eq('created_by', user.id);
+    } catch (e) {
+      console.warn('[Sync] deleteFromCloud error', e);
+    }
+  }
+
   return {
     detectLocalData,
     showMigrationBanner,
     runMigration,
     saveDataCloud,
-    loadDataCloud
+    loadDataCloud,
+    deleteFromCloud
   };
 })();
