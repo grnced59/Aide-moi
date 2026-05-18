@@ -21,7 +21,14 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .app-title{font-size:22px;font-weight:600;color:#3C3489;}
 .app-sub{font-size:12px;color:#534AB7;margin-top:2px;}
 .children-bar{display:flex;gap:10px;margin-bottom:1rem;overflow-x:auto;padding-bottom:4px;}
-.c-chip{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;}
+.profile-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:1rem;padding:0 4px;}
+.profile-sort-btn{font-size:12px;padding:8px 10px;border-radius:14px;border:1px solid rgba(83,74,183,.2);background:#F4F0FF;color:#3C3489;cursor:pointer;font-weight:600;}
+.profile-add-btn{font-size:12px;padding:8px 10px;border-radius:14px;border:1px solid rgba(83,74,183,.2);background:#D7E8FF;color:#0F377C;cursor:pointer;font-weight:700;}
+.profile-status{font-size:12px;color:#534AB7;opacity:.85;}
+.favorite-btn{font-size:13px;padding:8px 12px;border-radius:16px;border:none;background:rgba(255,255,255,.95);cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.08);font-weight:600;}
+.favorite-btn.fav{background:#FFDDE0;color:#B11F1F;}
+.c-chip{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;}
+.c-chip .favorite-indicator{position:absolute;right:-2px;top:-2px;width:18px;height:18px;border-radius:50%;background:#FFD166;color:#3C2A12;font-size:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.15);}
 .c-bubble{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:3px solid transparent;overflow:hidden;}
 .c-bubble img{width:100%;height:100%;object-fit:cover;display:block;}
 .c-chip.active .c-bubble{border-color:#534AB7;}
@@ -207,6 +214,8 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .pdf-modal-card{width:min(420px,100%);background:#FFFFFF;border-radius:18px;padding:1rem;border:2px solid #CECBF6;box-shadow:0 12px 40px rgba(22,14,64,.18);}
 .pdf-modal-title{font-size:16px;font-weight:700;color:#3C3489;margin-bottom:4px;}
 .pdf-modal-sub{font-size:12px;color:#534AB7;line-height:1.4;margin-bottom:12px;}
+.pdf-password-label{font-size:13px;font-weight:600;color:#3C3489;margin-bottom:6px;}
+.pdf-password-input{width:100%;padding:10px 12px;border-radius:12px;border:1.5px solid #AFA9EC;background:#F7F5FF;color:#3C3489;font-size:13px;margin-bottom:12px;}
 .pdf-actions{display:grid;grid-template-columns:1fr;gap:8px;}
 .pdf-opt{padding:10px 12px;border-radius:12px;border:1.5px solid #AFA9EC;background:#F7F5FF;color:#3C3489;font-size:13px;font-weight:600;cursor:pointer;text-align:left;}
 .pdf-opt strong{display:block;font-size:14px;}
@@ -293,13 +302,21 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   </div>
 
   <div class="children-bar" id="cbar"></div>
+  <div class="profile-toolbar">
+    <button class="profile-sort-btn" onclick="cycleProfileSort()">Trier : <span id="profile-sort-label">Par défaut</span></button>
+    <div class="profile-status" id="profile-status">1 profil</div>
+  </div>
 
   <div class="header" id="hdr">
     <div class="av-wrap" onclick="openPhotoSheet()">
       <div class="avatar" id="hav"></div>
       <span class="av-photo-lbl">📷 Photo</span>
     </div>
-    <div><div class="hdr-name" id="hname"></div><div class="hdr-sub" id="hsub"></div></div>
+    <div>
+      <div class="hdr-name" id="hname"></div>
+      <div class="hdr-sub" id="hsub"></div>
+    </div>
+    <button class="favorite-btn" id="favorite-btn" onclick="toggleFavorite()">☆ Favori</button>
     <button class="edit-btn" id="edit-btn-hdr" onclick="openEditSheet()">Modifier ✏️</button>
   </div>
   <input type="file" id="profile-photo-input" accept="image/*" style="display:none;">
@@ -489,6 +506,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     <div class="stitle">Données</div>
     <div class="regl-section">
       <button class="regl-row" onclick="exportData()">💾 Exporter les données (JSON)</button>
+      <button class="regl-row" onclick="openPdfModal()">🧾 Exporter en PDF protégé</button>
+      <button class="regl-row" id="btn-toggle-local-only" onclick="toggleLocalOnlyMode()">🔒 Basculer en mode local uniquement</button>
+      <button class="regl-row danger" onclick="deleteUserInfo()">🗑️ Effacer mes infos personnelles</button>
       <button class="regl-row" id="btn-migrate-local" style="display:none;" onclick="Sync.runMigration()">☁️ Migrer les données locales vers le cloud</button>
       <button class="regl-row danger" onclick="resetAllDataFromSettings()">♻️ Réinitialiser toutes les données</button>
     </div>
@@ -555,7 +575,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 <div class="pdf-modal" id="pdf-modal">
   <div class="pdf-modal-card">
     <div class="pdf-modal-title">Générer le récapitulatif</div>
-    <div class="pdf-modal-sub">Choisis l'orientation A4. La mise en page s'adapte automatiquement pour l'impression.</div>
+    <div class="pdf-modal-sub">Choisis l'orientation A4. Le PDF sera chiffré avec le mot de passe que tu indiques.</div>
+    <div class="pdf-password-label">Mot de passe de protection PDF</div>
+    <input id="pdf-password" class="pdf-password-input" type="password" placeholder="Entrez un mot de passe sécurisé">
     <div class="pdf-actions">
       <button class="pdf-opt" onclick="generateRecapPdf('portrait')"><strong>A4 Portrait</strong>Structure verticale, lecture classique</button>
       <button class="pdf-opt" onclick="generateRecapPdf('landscape')"><strong>A4 Paysage</strong>Colonnes optimisées pour plus de contenu</button>
@@ -593,25 +615,111 @@ var kids=[
    docs:{ordo:[],proto:[],autre:[]},
    urgNote:"Hugo est suivi pour polyhandicap avec épilepsie traitée. En cas de crise convulsive > 5 min : appeler le 15 immédiatement. Mettre en position latérale de sécurité. Ne pas contraindre. Allergie : aucune connue. Groupe sanguin : A+.",
    attente:[{role:"Parent",urgence:"important",date:"12 avril 2026 · 7h30",txt:"Hugo a mal dormi, spasmes cette nuit. Prévoir kiné douce ce matin. Éviter les activités stimulantes avant 10h."},{role:"Intervenant",urgence:"normal",date:"11 avril 2026 · 17h00",txt:"Bonne journée. Hugo a souri pendant la musicothérapie. Repas complet. Hydratation : 5/6 verres."}]
-  },
-    {prenom:"Emma",age:"6 ans",diag:"Trisomie 21 · IME + kiné",av:"👧",bg:"#9FE1CB",hbg:"#E1F5EE",htxt:"#085041",
-   likes:["Musique","Danse","Animaux","Couleurs vives"],
-   dislikes:["Attente longue","Cris","Obscurité"],
-   needs:["Stimulation sensorielle","Pictogrammes","Kiné quotidienne"],
-   tasks:[{done:true,label:"Médicament thyroïde",time:"7h00"},{done:false,label:"Exercices kiné du matin",time:"8h30"},{done:false,label:"Séance IME",time:"9h00"}],
-   rdvs:[{t:"Kinésithérapie",m:"Tous les matins · M. Renaud"},{t:"Cardiologue",m:"22 avril 10h00 · CHU"}],
-   meds:[{n:"Levothyrox",d:"50 µg · 1 comprimé",w:"Matin"}],
-   contacts:[{i:"MR",n:"M. Renaud",r:"Kinésithérapeute",t:"01 44 22 87 30"},{i:"IM",n:"IME Les Sourires",r:"Directrice · Mme Aubert",t:"01 60 33 44 20"}],
-   media:[{ic:"♪",t:"Comptines animées",d:"Chansons avec mouvements"},{ic:"▶",t:"Animaux de la ferme",d:"Vidéo éducative douce"}],
-   journal:[{date:"9 avril 2026",mood:"😊",txt:"Très bonne séance de kiné. A marché 10 minutes sans aide !"}],
-   foodOk:["Purée","Yaourt","Fruits mixés","Soupe veloutée","Gâteau mou"],
-   foodNo:["Aliments durs","Gros morceaux","Épices"],
-   regimes:["Textures molles","Alimentation mixée","Petit appétit le matin"],
-   repas:[{moment:"Petit-déjeuner",detail:"Yaourt + purée de fruits"},{moment:"Déjeuner",detail:"Soupe veloutée + purée légumes + compote"}],
-   hydro:[{label:"Eau",icone:"🥛",type:"verre",cible:5,bu:2},{label:"Soupe",icone:"🍵",type:"bol",cible:1,bu:1},{label:"Biberon lait",icone:"🍼",type:"biberon",cible:2,bu:1}]
   }
 ];
 var idx=0;
+var profileSortMode="default";
+var profileSortLabels={default:"Par défaut",favorite:"Favoris d'abord",name:"Par nom"};
+
+function getSortedProfileIndexes(){
+  var ids=kids.map(function(_,i){return i;});
+  if(profileSortMode==="name"){
+    ids.sort(function(a,b){
+      var A=(kids[a].prenom||"").toLowerCase();
+      var B=(kids[b].prenom||"").toLowerCase();
+      if(A===B) return a-b;
+      return A<B?-1:1;
+    });
+  } else if(profileSortMode==="favorite"){
+    ids.sort(function(a,b){
+      var fa=kids[a].favorite?1:0;
+      var fb=kids[b].favorite?1:0;
+      if(fa!==fb) return fb-fa;
+      var A=(kids[a].prenom||"").toLowerCase();
+      var B=(kids[b].prenom||"").toLowerCase();
+      if(A===B) return a-b;
+      return A<B?-1:1;
+    });
+  }
+  return ids;
+}
+
+function updateProfileSortLabel(){
+  var lbl=document.getElementById("profile-sort-label");
+  if(lbl) lbl.textContent=profileSortLabels[profileSortMode] || "Par défaut";
+}
+
+function updateProfileStatus(){
+  var status=document.getElementById("profile-status");
+  if(!status) return;
+  var favCount=kids.filter(function(k){return k.favorite;}).length;
+  if(kids.length===1){
+    status.textContent="Profil unique";
+  } else if(favCount>0){
+    status.textContent=favCount+" favori(s) • "+kids.length+" profils";
+  } else {
+    status.textContent=kids.length+" profils";
+  }
+}
+
+function cycleProfileSort(){
+  var order=["default","favorite","name"];
+  var idxMode=order.indexOf(profileSortMode);
+  profileSortMode=order[(idxMode+1)%order.length];
+  updateProfileSortLabel();
+  renderBar();
+}
+
+function toggleFavorite(){
+  var k=kids[idx];
+  if(!k) return;
+  if(k._isShared){alert("Ce profil est partagé en lecture seule. Vous ne pouvez pas le modifier.");return;}
+  k.favorite=!k.favorite;
+  saveData();
+  render();
+}
+
+function createNewProfile(prenom, age, diag) {
+  var avatars = ["🧒","👧","👦","🌟","🌈","🦋"];
+  var colors = [
+    {bg:"#CECBF6",hbg:"#EEEDFE",htxt:"#3C3489"},
+    {bg:"#FAC775",hbg:"#FAEEDA",htxt:"#633806"},
+    {bg:"#F4C0D1",hbg:"#FBEAF0",htxt:"#72243E"},
+    {bg:"#85B7EB",hbg:"#E6F1FB",htxt:"#0C447C"}
+  ];
+  var color = colors[kids.length % colors.length];
+  return {
+    prenom: prenom || "Nouvel enfant",
+    age: age || "",
+    diag: diag || "",
+    av: avatars[kids.length % avatars.length],
+    bg: color.bg,
+    hbg: color.hbg,
+    htxt: color.htxt,
+    _ownerId: (Auth.getCurrentUser && Auth.getCurrentUser() && Auth.getCurrentUser().id) || null,
+    _isShared: false,
+    likes: [],
+    dislikes: [],
+    needs: [],
+    tasks: [],
+    rdvs: [],
+    meds: [],
+    contacts: [],
+    media: [],
+    journal: [],
+    foodOk: [],
+    foodNo: [],
+    regimes: [],
+    repas: [],
+    hydro: [],
+    attente: [],
+    urgContacts: [],
+    ordos: [],
+    docs: {ordo:[], proto:[], autre:[]},
+    urgNote: ""
+  };
+}
+
 var jsPdfLoaderPromise=null;
 
 function ensureJsPdfLoaded(){
@@ -653,10 +761,18 @@ function showTab(name){
 
 function renderBar(){
   var bar=document.getElementById("cbar");bar.innerHTML="";
-  kids.forEach(function(k,i){
+  updateProfileSortLabel();
+  updateProfileStatus();
+  var sorted=getSortedProfileIndexes();
+  sorted.forEach(function(i){
+    var k=kids[i];
     var d=document.createElement("div");d.className="c-chip"+(i===idx?" active":"");
     var bubbleContent=k.photo?("<img src='"+k.photo+"' alt=''>"):k.av;
     d.innerHTML="<div class='c-bubble' style='background:"+k.bg+"'>"+bubbleContent+"</div><div class='c-label'>"+k.prenom+"</div>";
+    if(k.favorite){
+      var star=document.createElement("div");star.className="favorite-indicator";star.textContent="★";
+      d.appendChild(star);
+    }
     d.onclick=(function(i2){return function(){idx=i2;render();};})(i);
     (function(i2){
       var pt;
@@ -668,22 +784,17 @@ function renderBar(){
   });
   var a=document.createElement("div");a.className="add-chip";
   a.innerHTML="<div class='add-bubble'>+</div><div class='add-label'>Ajouter</div>";
-  a.onclick=function(){
-    var p=prompt("Prénom :");if(!p)return;
-    var ag=prompt("Âge :")||"";var dg=prompt("Diagnostic :")||"";
-    var avs=["🧒","👧","👦","🌟","🌈","🦋"];
-    var bgs=[{bg:"#CECBF6",hbg:"#EEEDFE",htxt:"#3C3489"},{bg:"#FAC775",hbg:"#FAEEDA",htxt:"#633806"},{bg:"#F4C0D1",hbg:"#FBEAF0",htxt:"#72243E"},{bg:"#85B7EB",hbg:"#E6F1FB",htxt:"#0C447C"}];
-    var bc=bgs[kids.length%bgs.length];
-    kids.push({
-      prenom:p,age:ag,diag:dg,av:avs[kids.length%avs.length],bg:bc.bg,hbg:bc.hbg,htxt:bc.htxt,
-      _ownerId:(Auth.getCurrentUser()&&Auth.getCurrentUser().id)||null,
-      _isShared:false,
-      likes:[],dislikes:[],needs:[],tasks:[],rdvs:[],meds:[],contacts:[],media:[],journal:[],foodOk:[],foodNo:[],regimes:[],repas:[],
-      hydro:[],attente:[],urgContacts:[],ordos:[],docs:{ordo:[],proto:[],autre:[]},urgNote:""
-    });
-    idx=kids.length-1;render();
-  };
+  a.onclick=addProfile;
   bar.appendChild(a);
+}
+
+function addProfile(){
+  var p=prompt("Prénom du nouveau profil :");if(!p)return;
+  var ag=prompt("Âge :")||"";
+  var dg=prompt("Diagnostic :")||"";
+  kids.push(createNewProfile(p, ag, dg));
+  idx=kids.length-1;
+  render();
 }
 
 function renderHeader(){
@@ -698,6 +809,11 @@ function renderHeader(){
   av.style.background=k.bg;
   var hn=document.getElementById("hname");hn.textContent=k.prenom+", "+k.age;hn.style.color=k.htxt;
   var hs=document.getElementById("hsub");hs.textContent=k.diag;hs.style.color=k.htxt;hs.style.opacity=".75";
+  var fav=document.getElementById("favorite-btn");
+  if(fav){
+    fav.classList.toggle("fav",!!k.favorite);
+    fav.textContent=(k.favorite?"★ Favori":"☆ Favori");
+  }
   var eb=document.getElementById("edit-btn-hdr");eb.style.background=k.bg;eb.style.color=k.htxt;
   if(k._isShared){
     eb.textContent="🔒 Partagé";eb.style.opacity=".6";eb.onclick=function(){alert("Ce profil est partagé en lecture seule. Vous ne pouvez pas le modifier.");};
@@ -1184,10 +1300,19 @@ function openPhotoSheetFromSettings(){
 function deleteProfile(){
   var k=kids[idx];if(!k)return;
   if(k._isShared){alert("Ce profil est partagé en lecture seule. Vous ne pouvez pas le supprimer.");return;}
-  if(kids.length<=1){alert("Impossible de supprimer le seul profil existant.\n\nAjoutez d'abord un autre profil.");return;}
   var nom=kids[idx].prenom;
   if(!confirm("Supprimer le profil de "+nom+" ?\n\nToutes ses données seront définitivement effacées."))return;
   var cloudId=k._id||null;
+  if(kids.length<=1){
+    kids[0] = createNewProfile("", "", "");
+    idx = 0;
+    saveData();render();
+    dismissEditSheet();
+    if(cloudId&&supabaseIsConfigured()&&Auth.getCurrentUser()){
+      Sync.deleteFromCloud(cloudId).catch(function(){});
+    }
+    return;
+  }
   kids.splice(idx,1);
   idx=Math.max(0,idx-1);
   saveData();render();
@@ -1208,10 +1333,56 @@ function exportData(){
     setTimeout(function(){try{document.body.removeChild(a);}catch(_){}URL.revokeObjectURL(url);},1500);
   }catch(e){alert("Erreur lors de l'export.");}
 }
+function isLocalOnlyMode(){
+  return localStorage.getItem('aideMoi_localOnly')==='1';
+}
+function setLocalOnlyMode(enabled){
+  if(enabled){
+    localStorage.setItem('aideMoi_localOnly','1');
+  } else {
+    localStorage.removeItem('aideMoi_localOnly');
+  }
+  renderReglagesAccount();
+  render();
+}
+function toggleLocalOnlyMode(){
+  var enabled=!isLocalOnlyMode();
+  setLocalOnlyMode(enabled);
+  if(enabled){
+    alert('Mode local uniquement activé. Les données ne seront plus synchronisées dans le cloud.');
+    loadData();
+    render();
+  } else {
+    alert('Mode local uniquement désactivé. L app pourra à nouveau synchroniser les données en cloud si vous êtes connecté.');
+    location.reload();
+  }
+}
+function clearLocalAppData(){
+  localStorage.removeItem("aideMoi_kids");
+  localStorage.removeItem("aideMoi_idx");
+  localStorage.removeItem("aideMoi_version");
+  localStorage.removeItem("aideMoi_userId");
+  localStorage.removeItem("aideMoi_migrated_at");
+  localStorage.removeItem('aideMoi_localOnly');
+}
+async function deleteUserInfo(){
+  if(!confirm("Effacer toutes les informations personnelles de l'application ?\n\nCela supprimera les données locales et, si vous êtes connecté, vos fiches cloud associées.")) return;
+  if(!isLocalOnlyMode() && supabaseIsConfigured() && Auth.getCurrentUser()){
+    try{
+      await Sync.deleteAllUserData();
+    }catch(e){console.warn("[DeleteUserInfo] cloud purge failed",e);}
+  }
+  clearLocalAppData();
+  alert("Toutes les données personnelles ont été supprimées de l'appareil.");
+  if(supabaseIsConfigured() && Auth.getCurrentUser() && !isLocalOnlyMode()){
+    Auth.signOut();
+  } else {
+    location.reload();
+  }
+}
 function resetAllDataFromSettings(){
   if(confirm("Effacer toutes les données et repartir de zéro ?\n\nCette action est irréversible.")){
-    localStorage.removeItem("aideMoi_kids");
-    localStorage.removeItem("aideMoi_idx");
+    clearLocalAppData();
     location.reload();
   }
 }
@@ -1370,7 +1541,7 @@ saveData=function(){
   _origSave(); // localStorage immédiat
   showSaveNotif();
   // Sync cloud en arrière-plan si configuré
-  if(supabaseIsConfigured() && Auth.getCurrentUser()){
+  if(!isLocalOnlyMode() && supabaseIsConfigured() && Auth.getCurrentUser()){
     Sync.saveDataCloud().catch(function(){});
   }
 };
@@ -1390,7 +1561,7 @@ function renderUserIndicator(){
   var avFallback=document.getElementById("user-av-fallback");
   var profile=Auth.getCurrentProfile();
   var user=Auth.getCurrentUser();
-  if(!user && !supabaseIsConfigured()){
+  if(isLocalOnlyMode() || (!user && !supabaseIsConfigured())){
     indicator.style.display="none";
     return;
   }
@@ -1441,7 +1612,19 @@ function renderReglagesAccount(){
   var section=document.getElementById("regl-account-section");
   var noauthTitle=document.getElementById("regl-noauth-section");
   var noauthBtn=document.getElementById("regl-noauth-btn");
+  var localOnlyBtn=document.getElementById("btn-toggle-local-only");
   if(!section) return;
+  if(localOnlyBtn){
+    localOnlyBtn.textContent=isLocalOnlyMode()?"🔓 Désactiver le mode local uniquement":"🔒 Activer le mode local uniquement";
+  }
+  if(isLocalOnlyMode()){
+    section.style.display="none";
+    if(noauthTitle) noauthTitle.style.display="none";
+    if(noauthBtn) noauthBtn.style.display="none";
+    var storageInfo=document.getElementById("regl-storage-info");
+    if(storageInfo) storageInfo.textContent="Mode local uniquement : aucune donnée n'est synchronisée sur internet.";
+    return;
+  }
   if(hasCloud){
     section.style.display="block";
     if(noauthTitle) noauthTitle.style.display="none";
@@ -1480,12 +1663,15 @@ function renderReglagesAccount(){
   var app=document.querySelector(".app");
 
   // Supabase non configuré → mode local direct
-  if(!supabaseIsConfigured()){
+  if(!supabaseIsConfigured() || isLocalOnlyMode()){
     authLoading.style.display="none";
     app.style.display="";
     loadData();
     render();
     document.getElementById("tab-profil").classList.add("visible");
+    if(isLocalOnlyMode()){
+      console.info('Mode local uniquement activé — aucune synchronisation cloud.');
+    }
     return;
   }
 
@@ -1736,6 +1922,8 @@ function closeDocViewer(){
 
 function openPdfModal(){
   var modal=document.getElementById("pdf-modal");
+  var pass=document.getElementById("pdf-password");
+  if(pass)pass.value="";
   if(modal)modal.classList.add("active");
 }
 
@@ -1747,6 +1935,12 @@ function closePdfModal(){
 document.addEventListener("click",function(e){
   if(e.target&&e.target.id==="pdf-modal") closePdfModal();
 });
+
+function getPdfPassword(){
+  var passField=document.getElementById("pdf-password");
+  if(!passField) return "";
+  return passField.value.trim();
+}
 
 function asList(arr,fallback){
   return (Array.isArray(arr)&&arr.length)?arr:[(fallback||"Aucune donnée renseignée")];
@@ -1853,6 +2047,11 @@ function drawSection(doc,section,x,y,w,h){
 }
 
 async function generateRecapPdf(orientation){
+  var password=getPdfPassword();
+  if(!password){
+    alert("Merci de saisir un mot de passe pour protéger le PDF.");
+    return;
+  }
   closePdfModal();
   var jsPdfObj;
   try{
@@ -1865,7 +2064,7 @@ async function generateRecapPdf(orientation){
   try{
     var k=(Array.isArray(kids)&&kids[idx])?kids[idx]:{};
     var sections=makeChildSections(k);
-    var doc=new jsPdfObj({orientation:orientation,unit:"mm",format:"a4",compress:true,putOnlyUsedFonts:true});
+    var doc=new jsPdfObj({orientation:orientation,unit:"mm",format:"a4",compress:true,putOnlyUsedFonts:true,encryption:{userPassword:password,ownerPassword:password,userPermissions:[]}});
     var pageWidth=doc.internal.pageSize.getWidth();
     var pageHeight=doc.internal.pageSize.getHeight();
     var margins={top:10,right:10,bottom:10,left:10};

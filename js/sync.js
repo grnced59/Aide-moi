@@ -289,12 +289,24 @@ var Sync = (function () {
     }
   }
 
+  async function deleteAllUserData() {
+    var sb = getSupabaseClient();
+    var user = Auth.getCurrentUser();
+    if (!sb || !user) return;
+    try {
+      await sb.from('children').delete().eq('created_by', user.id);
+    } catch (e) {
+      console.warn('[Sync] deleteAllUserData error', e);
+    }
+  }
+
   return {
     detectLocalData,
     showMigrationBanner,
     runMigration,
     saveDataCloud,
     loadDataCloud,
-    deleteFromCloud
+    deleteFromCloud,
+    deleteAllUserData
   };
 })();
