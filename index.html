@@ -344,7 +344,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   <div class="tab visible" id="tab-profil">
     <div class="stitle">Ce qu'il / elle aime</div>
     <div class="card" style="background:#9FE1CB;color:#085041;"><div class="tag-row" id="r-likes"></div></div>
-    <div class="stitle">Ce qu'il / elle n'aime pas</div>
+    <div class="stitle">Ce que je n'aime pas</div>
     <div class="card" style="background:#F5C4B3;color:#712B13;"><div class="tag-row" id="r-dislikes"></div></div>
     <div class="stitle">Besoins spécifiques</div>
     <div class="card" style="background:#B5D4F4;color:#0C447C;"><div class="tag-row" id="r-needs"></div></div>
@@ -601,7 +601,7 @@ var kids=[
    needs:["Kiné quotidienne","Communication PECS","Aide aux repas","Verticalisateur","Stimulations sensorielles douces"],
    tasks:[{done:true,label:"Médicament du matin",time:"7h30"},{done:false,label:"Kinésithérapie — membres inférieurs",time:"9h00"},{done:false,label:"Séance d'orthophonie",time:"11h00"},{done:false,label:"Repas du midi — aide complète",time:"12h00"},{done:false,label:"Verticalisateur 20 min",time:"14h30"},{done:false,label:"Musicothérapie",time:"16h00"}],
    rdvs:[{t:"Kinésithérapie",m:"Chaque matin · M. Renaud"},{t:"Orthophonie",m:"Lundi & jeudi · Mme Leblanc"},{t:"Neuropédiatre",m:"15 mai 10h00 · Dr Moreau"},{t:"Appareillage",m:"22 mai 14h00 · Centre orthopédique"}],
-   meds:[{n:"Baclofène",d:"10 mg · 2 cp",w:"Matin"},{n:"Mélatonine",d:"2 mg · 1 gél",w:"Soir"},{n:"Vitamine D",d:"1000 UI · 1 goutte",w:"Midi"},{n:"Valproate",d:"200 mg · 1 cp",w:"Soir"}],
+   meds:[{n:"Baclofène",d:"10 mg · 2 cp",h:["Matin"]},{n:"Mélatonine",d:"2 mg · 1 gél",h:["Soir"]},{n:"Vitamine D",d:"1000 UI · 1 goutte",h:["Midi"]},{n:"Valproate",d:"200 mg · 1 cp",h:["Soir"]}],
    contacts:[{i:"DM",n:"Dr Moreau",r:"Neuropédiatre",t:"01 42 33 55 12"},{i:"LB",n:"Mme Leblanc",r:"Orthophoniste",t:"01 55 87 21 40"},{i:"MR",n:"M. Renaud",r:"Kinésithérapeute",t:"01 44 22 87 30"},{i:"IME",n:"IME Les Pins",r:"Directrice · Mme Aubert",t:"01 60 33 44 20"}],
    media:[{ic:"♪",t:"Playlist musicothérapie Hugo",d:"Musique douce et apaisante"},{ic:"▶",t:"Relaxation guidée",d:"Séance 10 min avant le coucher"},{ic:"♪",t:"Sons de la nature",d:"Forêt, pluie, oiseaux"}],
    journal:[{date:"11 avril 2026",mood:"😊",txt:"Bonne journée. Hugo a souri pendant la musicothérapie. Repas complet. Hydratation : 5/6 verres."},{date:"10 avril 2026",mood:"😔",txt:"Nuit difficile avec spasmes. Kiné douce le matin. Moins réactif l'après-midi."}],
@@ -1005,9 +1005,12 @@ function addBoisson(){
 }
 
 function addRepas(){
+  var type=prompt("Type de repas : midi ou soir ?");if(!type)return;
+  type=type.toLowerCase().trim();
+  if(type!=="midi"&&type!=="soir"){alert("Veuillez entrer 'midi' ou 'soir'");return;}
   var moment=prompt("Moment du repas (ex: Déjeuner) :");if(!moment)return;
   var detail=prompt("Ce qui a été mangé :");if(!detail)return;
-  kids[idx].repas.push({moment:moment,detail:detail});
+  kids[idx].repas.push({type:type,moment:moment,detail:detail});
   renderRepas();
   saveData();
 }
@@ -1031,8 +1034,38 @@ function addRdv(){
 function addMed(){
   var nom=prompt("Nom du médicament :");if(!nom)return;
   var dosage=prompt("Posologie :")||"";
-  var moment=prompt("Moment (matin / midi / soir) :")||"";
-  kids[idx].meds.push({n:nom,d:dosage,w:moment});
+  var moment=prompt("Moment (matin / midi / soir / autre) :")||"";
+  var horaires=moment?[moment]:[];
+  kids[idx].meds.push({n:nom,d:dosage,h:horaires});
+  renderMeds();
+  saveData();
+}
+
+function addHoraireMed(medIndex){
+  if(medIndex<0||medIndex>=kids[idx].meds.length)return;
+  var med=kids[idx].meds[medIndex];
+  var moment=prompt("Ajouter un horaire (matin / midi / soir / autre) :");
+  if(!moment)return;
+  if(!Array.isArray(med.h))med.h=med.w?[med.w]:[];
+  if(med.h.indexOf(moment)===-1){
+    med.h.push(moment);
+    renderMeds();
+    saveData();
+  }else{
+    alert("Cet horaire existe déjà pour ce médicament.");
+  }
+}
+
+function removeHoraireMed(medIndex,horIndex){
+  if(medIndex<0||medIndex>=kids[idx].meds.length)return;
+  var med=kids[idx].meds[medIndex];
+  if(!Array.isArray(med.h))med.h=med.w?[med.w]:[];
+  if(horIndex<0||horIndex>=med.h.length)return;
+  med.h.splice(horIndex,1);
+  if(med.h.length===0){
+    if(!confirm("Supprimer le médicament "+med.n+" (plus aucun horaire) ?"))return;
+    kids[idx].meds.splice(medIndex,1);
+  }
   renderMeds();
   saveData();
 }
@@ -1084,9 +1117,32 @@ function renderMeds(){
   var k=kids[idx],el=document.getElementById("r-meds");el.innerHTML="";
   if(!k.meds.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun traitement.</div>";return;}
   k.meds.forEach(function(m,i){
+    // Migrate old format (w) to new format (h)
+    if(!Array.isArray(m.h)&&m.w){
+      m.h=[m.w];
+      delete m.w;
+    }
+    if(!Array.isArray(m.h))m.h=[];
+    
+    var horairesHtml="";
+    if(m.h.length>0){
+      horairesHtml="<div style='display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;'>";
+      m.h.forEach(function(h,hi){
+        horairesHtml+="<span class='mbadge' style='position:relative;display:inline-flex;align-items:center;gap:4px;'>"+h+"<button style='background:none;border:none;color:inherit;opacity:.6;cursor:pointer;font-size:12px;padding:0 2px;margin-left:2px;line-height:1;' onclick='removeHoraireMed("+i+","+hi+")'>✕</button></span>";
+      });
+      horairesHtml+="</div>";
+    }
+    
     var d=document.createElement("div");d.className="med-row";
-    d.innerHTML="<div style='flex:1'><div class='mname'>"+m.n+"</div><div class='mdose'>"+m.d+"</div></div><span class='mbadge'>"+m.w+"</span><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].meds.splice(i2,1);renderMeds();saveData();};})(i);
+    d.style.flexDirection="column";d.style.alignItems="flex-start";d.style.gap="8px";
+    d.innerHTML="<div style='width:100%;display:flex;justify-content:space-between;align-items:flex-start;'><div style='flex:1'><div class='mname'>"+m.n+"</div><div class='mdose'>"+m.d+"</div></div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button></div>"+horairesHtml+"<button type='button' style='background:none;border:none;color:inherit;font-size:12px;padding:0;margin-top:4px;opacity:.7;cursor:pointer;text-decoration:underline;'>+ Ajouter un horaire</button>";
+    
+    var delBtn=d.querySelector("button");
+    delBtn.onclick=(function(i2){return function(){kids[idx].meds.splice(i2,1);renderMeds();saveData();};})(i);
+    
+    var addBtn=d.querySelector("button[type='button']");
+    if(addBtn) addBtn.onclick=(function(i2){return function(){addHoraireMed(i2);};})(i);
+    
     el.appendChild(d);
   });
 }
@@ -1958,7 +2014,7 @@ function makeChildSections(k){
   var urgContacts=safeArr(k.urgContacts).map(function(c){c=c||{};return (c.nom||"Contact urgence")+" - "+(c.tel||"Téléphone non renseigné");});
   var tasks=safeArr(k.tasks).map(function(t){t=t||{};return (t.done?"[Fait] ":"[À faire] ")+(t.label||"Tâche")+" - "+(t.time||"Heure non renseignée");});
   var rdvs=safeArr(k.rdvs).map(function(r){r=r||{};return (r.t||"Rendez-vous")+" - "+(r.m||"Détail non renseigné");});
-  var meds=safeArr(k.meds).map(function(m){m=m||{};return (m.n||"Médicament")+" - "+(m.d||"Posologie non renseignée")+" - "+(m.w||"Moment non renseigné");});
+  var meds=safeArr(k.meds).map(function(m){m=m||{};var horaires=(Array.isArray(m.h)&&m.h.length>0)?m.h.join(", "):(m.w||"Moment non renseigné");return (m.n||"Médicament")+" - "+(m.d||"Posologie non renseignée")+" - "+horaires;});
   var media=safeArr(k.media).map(function(m){m=m||{};return (m.t||"Média")+" - "+(m.d||"Détail non renseigné");});
   var journal=safeArr(k.journal).map(function(j){j=j||{};return (j.date||"Date non renseignée")+" - "+(j.mood||"")+" "+(j.txt||"");});
   var repas=safeArr(k.repas).map(function(r){r=r||{};return (r.moment||"Repas")+": "+(r.detail||"Non renseigné");});

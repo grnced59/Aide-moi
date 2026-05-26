@@ -10,8 +10,27 @@
       "Bash(open \"http://localhost:3000\")",
       "Bash(mkdir -p \"/Users/cedricgarin/Documents/DEV aide moi /aide moi/js\" \"/Users/cedricgarin/Documents/DEV aide moi /aide moi/supabase\" && echo \"Dossiers créés\")"
     ],
+    "deny": [
+      "Bash(*netlify*)",
+      "Bash(*nfp_*)",
+      "Bash(*api.netlify.com*)"
+    ],
     "additionalDirectories": [
       "/Users/cedricgarin/Documents/DEV aide moi /aide moi"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); cmd=$(echo \"$input\" | jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qiE '(netlify|nfp_VP9k|api\\.netlify\\.com)'; then echo '{\"decision\":\"block\",\"reason\":\"RÈGLE PERMANENTE : déploiement Netlify interdit sans demande explicite de l utilisateur. Dis-le moi et je le ferai.\"}'; exit 0; fi; echo '{\"decision\":\"allow\"}'",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
