@@ -99,6 +99,15 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .fb-ok{background:rgba(255,255,255,.4);color:inherit;}
 .fb-no{background:rgba(200,50,50,.25);color:inherit;}
 .fb-care{background:rgba(255,200,50,.35);color:inherit;}
+.repas-card{border-radius:14px;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.repas-moment-bar{font-size:14px;font-weight:700;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;background:#FAC775;color:#412402;}
+.repas-parent-block{background:#FFF3DC;padding:10px 14px;color:#412402;}
+.repas-interv-block{background:#F0FAF5;padding:10px 14px;color:#085041;}
+.repas-block-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.6;margin-bottom:5px;}
+.repas-parent-text{font-size:13px;line-height:1.5;}
+.repas-interv-input{width:100%;border:1.5px solid rgba(8,80,65,.2);border-radius:8px;padding:7px 10px;font-size:13px;color:#085041;background:white;resize:none;box-sizing:border-box;font-family:inherit;}
+.repas-save-btn{margin-top:6px;padding:6px 14px;border-radius:20px;border:none;background:#085041;color:white;font-size:12px;cursor:pointer;font-weight:600;}
+.repas-del-btn{background:none;border:none;color:#412402;opacity:.45;cursor:pointer;font-size:15px;padding:0 2px;flex-shrink:0;}
 .add-btn{width:100%;padding:10px;border-radius:12px;border:2px dashed rgba(83,74,183,.3);background:#EEEDFE;color:#534AB7;font-size:13px;cursor:pointer;font-weight:500;margin-top:8px;}
 .new-note{width:100%;border:none;border-radius:12px;padding:10px;font-size:13px;color:#3C3489;background:rgba(255,255,255,.5);resize:none;margin-bottom:8px;}
 .mood-row{display:flex;gap:8px;margin-bottom:10px;}
@@ -342,7 +351,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   </div>
 
   <div class="tab visible" id="tab-profil">
-    <div class="stitle">Ce qu'il / elle aime</div>
+    <div class="stitle">Ce que j'aime</div>
     <div class="card" style="background:#9FE1CB;color:#085041;"><div class="tag-row" id="r-likes"></div></div>
     <div class="stitle">Ce que je n'aime pas</div>
     <div class="card" style="background:#F5C4B3;color:#712B13;"><div class="tag-row" id="r-dislikes"></div></div>
@@ -410,7 +419,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
       <div class="tag-row" id="r-regimes"></div>
     </div>
     <div class="stitle">Repas du jour</div>
-    <div class="card" id="r-repas" style="background:#FAC775;color:#412402;"></div>
+    <div id="r-repas"></div>
     <button class="add-btn" id="btn-add-repas" onclick="addRepas()">+ Ajouter un repas</button>
     <div class="stitle" style="margin-top:1rem;">Hydratation du jour</div>
     <div class="card" id="r-hydro" style="background:#85B7EB;color:#042C53;"></div>
@@ -608,7 +617,7 @@ var kids=[
    foodOk:["Purée lisse","Yaourt nature","Compote pomme","Soupe veloutée","Lait chaud"],
    foodNo:["Aliments solides","Morceaux","Aliments secs","Épices"],
    regimes:["Alimentation mixée complète","Aide totale aux repas","Texture lisse obligatoire","Petit appétit le soir"],
-   repas:[{moment:"Petit-déjeuner",detail:"Lait chaud + céréales mixées + compote"},{moment:"Déjeuner",detail:"Soupe veloutée + purée légumes + yaourt"},{moment:"Goûter",detail:"Compote + lait"}],
+   repas:[{moment:"Petit-déjeuner",prepareParent:"Lait chaud + céréales mixées + compote",donneIntervenant:""},{moment:"Déjeuner",prepareParent:"Soupe veloutée + purée légumes + yaourt",donneIntervenant:""},{moment:"Goûter",prepareParent:"Compote + lait",donneIntervenant:""}],
    hydro:[{label:"Eau",icone:"🥛",type:"verre",cible:6,bu:4},{label:"Lait",icone:"🍼",type:"biberon",cible:2,bu:1},{label:"Soupe",icone:"🍵",type:"bol",cible:1,bu:1}],
    urgContacts:[{icone:"🏥",nom:"SAMU",tel:"15"},{icone:"👩‍⚕️",nom:"Dr Moreau (neuropéd.)",tel:"01 42 33 55 12"},{icone:"💊",nom:"Pharmacie de garde",tel:"3237"},{icone:"🏠",nom:"Foyer urgence",tel:"01 60 33 44 99"}],
    ordos:[{titre:"Traitement antiépileptique — Valproate",medecin:"Dr Moreau",date:"1 mars 2026",expiration:"1 mars 2027",valide:true,meds:["Valproate 200 mg — 1 cp le soir","Ne jamais arrêter brutalement","Contrôle sanguin tous les 3 mois"]},{titre:"Traitement spasticité — Baclofène",medecin:"Dr Moreau",date:"15 janvier 2026",expiration:"15 janvier 2027",valide:true,meds:["Baclofène 10 mg — 2 cp le matin","Surveiller somnolence excessive","Fièvre > 38°5 : appeler Dr Moreau"]}],
@@ -853,12 +862,31 @@ function renderFoodList(id,arr,badgeCls,badgeLabel){
 
 function renderRepas(){
   var k=kids[idx],el=document.getElementById("r-repas");el.innerHTML="";
-  if(!k.repas.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun repas noté.</div>";return;}
+  if(!k.repas.length){
+    el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.6;color:#412402;'>Aucun repas noté pour ce jour.</div>";
+    return;
+  }
   k.repas.forEach(function(r,i){
-    var d=document.createElement("div");d.className="food-row";
-    d.innerHTML="<div style='flex:1'><div class='rtitle'>"+r.moment+"</div><div style='font-size:12px;opacity:.8;margin-top:2px;'>"+r.detail+"</div></div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].repas.splice(i2,1);renderRepas();saveData();};})(i);
-    el.appendChild(d);
+    var card=document.createElement("div");card.className="repas-card";
+    var parentText=r.prepareParent||r.detail||"";
+    var intervText=r.donneIntervenant||"";
+    card.innerHTML=
+      "<div class='repas-moment-bar'>"+
+        "<span>🍽 "+r.moment+"</span>"+
+        "<button class='repas-del-btn'>✕</button>"+
+      "</div>"+
+      "<div class='repas-parent-block'>"+
+        "<div class='repas-block-label'>🧑‍🍳 Préparé par les parents</div>"+
+        "<div class='repas-parent-text'>"+parentText+"</div>"+
+      "</div>"+
+      "<div class='repas-interv-block'>"+
+        "<div class='repas-block-label'>✅ Ce qui a été donné</div>"+
+        "<textarea class='repas-interv-input' rows='2' placeholder='L'intervenant précise ce qu'il a donné...'>"+intervText+"</textarea>"+
+        "<button class='repas-save-btn'>Enregistrer</button>"+
+      "</div>";
+    card.querySelector(".repas-del-btn").onclick=(function(i2){return function(){kids[idx].repas.splice(i2,1);renderRepas();saveData();};})(i);
+    card.querySelector(".repas-save-btn").onclick=(function(i2,c){return function(){var v=c.querySelector(".repas-interv-input").value;kids[idx].repas[i2].donneIntervenant=v;saveData();};})(i,card);
+    el.appendChild(card);
   });
 }
 
@@ -1005,12 +1033,9 @@ function addBoisson(){
 }
 
 function addRepas(){
-  var type=prompt("Type de repas : midi ou soir ?");if(!type)return;
-  type=type.toLowerCase().trim();
-  if(type!=="midi"&&type!=="soir"){alert("Veuillez entrer 'midi' ou 'soir'");return;}
-  var moment=prompt("Moment du repas (ex: Déjeuner) :");if(!moment)return;
-  var detail=prompt("Ce qui a été mangé :");if(!detail)return;
-  kids[idx].repas.push({type:type,moment:moment,detail:detail});
+  var moment=prompt("Moment du repas (ex: Petit-déjeuner, Déjeuner, Goûter, Dîner) :");if(!moment)return;
+  var prep=prompt("Ce qui a été préparé par les parents :");if(!prep)return;
+  kids[idx].repas.push({moment:moment,prepareParent:prep,donneIntervenant:""});
   renderRepas();
   saveData();
 }
