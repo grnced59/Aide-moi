@@ -86,6 +86,17 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .mtitle{font-size:14px;font-weight:600;}
 .mdesc2{font-size:12px;opacity:.8;margin-top:2px;}
 .mlink{font-size:12px;cursor:pointer;font-weight:500;white-space:nowrap;background:rgba(255,255,255,.3);padding:4px 10px;border-radius:20px;}
+.yt-modal{display:none;position:fixed;inset:0;background:#000;z-index:9997;flex-direction:column;}
+.yt-modal.active{display:flex;}
+.yt-modal-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1a1040;min-height:52px;flex-shrink:0;}
+.yt-modal-back{background:rgba(255,255,255,.15);border:none;color:white;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;}
+.yt-modal-ttl{color:white;font-size:14px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.media-cats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:6px;}
+.media-cat-btn{background:rgba(255,255,255,.25);border:none;border-radius:14px;padding:12px 8px;cursor:pointer;color:inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;}
+.media-cat-btn:active{opacity:.7;}
+.mcat-ic{font-size:26px;}
+.mcat-label{font-size:12px;font-weight:700;}
+.mcat-sub{font-size:10px;opacity:.75;}
 .jentry{padding:10px 0;border-bottom:1.5px solid rgba(255,255,255,.3);}
 .jentry:last-child{border-bottom:none;}
 .jdate{font-size:11px;opacity:.75;margin-bottom:4px;}
@@ -384,10 +395,19 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   </div>
 
   <div class="tab" id="tab-media">
-    <div class="stitle">Vidéos et musiques</div>
+    <div class="stitle">Chercher sur YouTube</div>
+    <div class="card" style="background:#ED93B1;color:#4B1528;">
+      <div class="media-cats">
+        <button class="media-cat-btn" onclick="ytSearch('mickey mouse clubhouse français')"><div class="mcat-ic">🎭</div><div class="mcat-label">Mickey</div><div class="mcat-sub">Disney Junior</div></button>
+        <button class="media-cat-btn" onclick="ytSearch('comptines françaises enfants maternelle')"><div class="mcat-ic">🎵</div><div class="mcat-label">Comptines</div><div class="mcat-sub">Chansons enfants</div></button>
+        <button class="media-cat-btn" onclick="ytSearch('chansons disney français')"><div class="mcat-ic">✨</div><div class="mcat-label">Chansons Disney</div><div class="mcat-sub">Les classiques</div></button>
+        <button class="media-cat-btn" onclick="ytSearch('musique douce relaxation enfant sommeil')"><div class="mcat-ic">🌙</div><div class="mcat-label">Relaxation</div><div class="mcat-sub">Musique douce</div></button>
+      </div>
+      <div style="font-size:11px;opacity:.75;text-align:center;">Appuie sur une catégorie → copie le lien de la vidéo → "Ajouter" ci-dessous</div>
+    </div>
+    <div class="stitle">Mes favoris</div>
     <div class="card" id="r-media" style="background:#ED93B1;color:#4B1528;"></div>
-
-    <button class="add-btn" onclick="addMedia()">+ Ajouter un lien</button>
+    <button class="add-btn" onclick="addMedia()">+ Ajouter un lien YouTube</button>
     <button class="lock-btn" onclick="activateLock()">🔒 Verrouiller l'écran — mode lecture</button>
   </div>
 
@@ -571,6 +591,14 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     <div class="lock-timer" id="lock-timer">Verrouillé depuis 0s</div>
   </div>
   <div class="lock-overlay-hint">App conçue pour un usage sécurisé en accompagnement.</div>
+</div>
+
+<div class="yt-modal" id="yt-modal">
+  <div class="yt-modal-bar">
+    <button class="yt-modal-back" onclick="closeYTModal()">← Retour</button>
+    <div class="yt-modal-ttl" id="yt-modal-ttl">Lecture</div>
+  </div>
+  <iframe id="yt-iframe" src="" allowfullscreen allow="autoplay; encrypted-media" style="flex:1;width:100%;border:none;background:#000;"></iframe>
 </div>
 
 <div class="doc-viewer" id="doc-viewer">
@@ -1105,12 +1133,44 @@ function addContact(){
   saveData();
 }
 
+function ytSearch(q){
+  window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q),"_blank");
+}
+
+function extractYouTubeId(url){
+  var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+
+function getYouTubeEmbed(url){
+  var pid=url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+  var vid=extractYouTubeId(url);
+  if(pid&&vid) return "https://www.youtube.com/embed/"+vid+"?list="+pid[1]+"&autoplay=1&rel=0";
+  if(pid&&!vid) return "https://www.youtube.com/embed/videoseries?list="+pid[1]+"&autoplay=1&rel=0";
+  if(vid) return "https://www.youtube.com/embed/"+vid+"?autoplay=1&rel=0";
+  return null;
+}
+
+function openYTModal(url,title){
+  var embed=getYouTubeEmbed(url);
+  if(!embed){window.open(url,"_blank");return;}
+  document.getElementById("yt-iframe").src=embed;
+  document.getElementById("yt-modal-ttl").textContent=title||"Lecture";
+  document.getElementById("yt-modal").classList.add("active");
+}
+
+function closeYTModal(){
+  document.getElementById("yt-modal").classList.remove("active");
+  document.getElementById("yt-iframe").src="";
+}
+
 function addMedia(){
-  var titre=prompt("Titre du média :");if(!titre)return;
-  var detail=prompt("Description :")||"";
-  var url=prompt("Lien (optionnel, ex: https://...) :")||"";
-  var icone=prompt("Icône (optionnel, ex: ▶, ♪) :")||"▶";
-  kids[idx].media.push({ic:icone,t:titre,d:detail,url:url});
+  var url=prompt("Colle ici le lien YouTube de la vidéo :");if(!url)return;
+  url=url.trim();
+  if(!/^https?:\/\//i.test(url)){alert("Lien invalide. Il doit commencer par https://");return;}
+  var titre=prompt("Nom (ex: Mickey, Comptines, Relaxation...)")||"Vidéo";
+  var icone=(titre.toLowerCase().includes("music")||titre.toLowerCase().includes("comptine")||titre.toLowerCase().includes("chanson")||titre.toLowerCase().includes("relaxation"))?"🎵":"▶";
+  kids[idx].media.push({ic:icone,t:titre,d:"YouTube",url:url});
   renderMedia();
   saveData();
 }
@@ -1189,11 +1249,12 @@ function renderContacts(){
 
 function renderMedia(){
   var k=kids[idx],el=document.getElementById("r-media");el.innerHTML="";
-  if(!k.media.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun média.</div>";return;}
+  if(!k.media.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun favori — ajoute un lien YouTube ci-dessous.</div>";return;}
   k.media.forEach(function(m,i){
-    var label=(m.url&&String(m.url).trim())?"Ouvrir ↗":"Ajouter lien";
+    var hasUrl=m.url&&String(m.url).trim();
+    var label=hasUrl?"▶ Lancer":"+ Lien";
     var d=document.createElement("div");d.className="med-row2";
-    d.innerHTML="<div class='micon'>"+m.ic+"</div><div style='flex:1'><div class='mtitle'>"+m.t+"</div><div class='mdesc2'>"+m.d+"</div></div><button type='button' class='mlink' style='border:none;background:transparent;color:inherit;cursor:pointer;font:inherit;'>"+label+"</button><button type='button' style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
+    d.innerHTML="<div class='micon'>"+m.ic+"</div><div style='flex:1'><div class='mtitle'>"+m.t+"</div><div class='mdesc2'>"+m.d+"</div></div><button type='button' class='mlink' style='border:none;background:"+(hasUrl?"rgba(255,255,255,.35)":"rgba(255,255,255,.15)")+";color:inherit;cursor:pointer;font:inherit;'>"+label+"</button><button type='button' style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
     var btns=d.querySelectorAll("button");
     btns[0].onclick=(function(i2){return function(){openMedia(i2);};})(i);
     btns[1].onclick=(function(i2){return function(){kids[idx].media.splice(i2,1);renderMedia();saveData();};})(i);
@@ -1206,7 +1267,7 @@ function openMedia(i){
   if(!media)return;
   var url=(media.url||"").trim();
   if(!url){
-    var newUrl=prompt("Ajouter un lien pour \""+media.t+"\" :","");
+    var newUrl=prompt("Colle ici le lien YouTube pour \""+media.t+"\" :","");
     if(!newUrl)return;
     media.url=newUrl.trim();
     saveData();
@@ -1214,10 +1275,10 @@ function openMedia(i){
     url=media.url;
   }
   if(!/^https?:\/\//i.test(url)){
-    alert("Lien invalide. Utilisez un lien complet qui commence par http:// ou https://");
+    alert("Lien invalide. Il doit commencer par https://");
     return;
   }
-  window.open(url,"_blank");
+  openYTModal(url,media.t);
 }
 
 function renderJournal(){
