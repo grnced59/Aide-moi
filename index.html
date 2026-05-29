@@ -432,7 +432,11 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
       <textarea class="attente-input" id="attente-in" rows="3" placeholder="Écrire une consigne ou un retour de journée..."></textarea>
       <button class="save-btn" onclick="saveAttente()">Publier</button>
     </div>
-    <div class="stitle">Historique des messages</div>
+    <div class="stitle" style="display:flex;align-items:center;justify-content:space-between;">
+      Historique des messages
+      <button onclick="clearAllAttente()" style="font-size:11px;background:rgba(114,36,62,.12);border:1px solid rgba(114,36,62,.2);color:#72243E;border-radius:8px;padding:3px 10px;cursor:pointer;">Tout effacer</button>
+    </div>
+    <div style="font-size:11px;opacity:.6;margin-bottom:6px;">Effacement automatique après 24h</div>
     <div class="msg-card" id="r-attente" style="background:#ED93B1;color:#4B1528;"></div>
   </div>
 
@@ -1520,7 +1524,7 @@ function saveAttente(){
   if(!txt)return;
   var now=new Date();
   var date=now.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})+" · "+now.getHours()+"h"+(now.getMinutes()<10?"0":"")+now.getMinutes();
-  kids[idx].attente.unshift({role:curRole,urgence:curUrg,date:date,txt:txt});
+  kids[idx].attente.unshift({role:curRole,urgence:curUrg,date:date,txt:txt,ts:Date.now()});
   document.getElementById("attente-in").value="";
   renderAttente();
   saveData();
@@ -1529,12 +1533,26 @@ function saveAttente(){
 function renderAttente(){
   var k=kids[idx],el=document.getElementById("r-attente");
   if(!el)return;
-  if(!k.attente||!k.attente.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun message.</div>";return;}
+  var before=k.attente.length;
+  k.attente=k.attente.filter(function(m){return m.ts&&(Date.now()-m.ts)<86400000;});
+  if(k.attente.length!==before)saveData();
+  if(!k.attente.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun message.</div>";return;}
   var urgLabels={normal:"Normal",important:"⚠ Important",urgent:"🚨 Urgent"};
   var urgCls={normal:"urgence-normal",important:"urgence-important",urgent:"urgence-urgent"};
-  el.innerHTML=k.attente.map(function(m){
-    return "<div class='msg-item'><div class='msg-header'><span class='msg-role'>"+m.role+"</span><span class='msg-date'>"+m.date+"</span><span class='msg-urgence "+urgCls[m.urgence]+"''>"+urgLabels[m.urgence]+"</span></div><div class='msg-text'>"+m.txt+"</div></div>";
-  }).join("");
+  el.innerHTML="";
+  k.attente.forEach(function(m,i){
+    var d=document.createElement("div");d.className="msg-item";
+    d.innerHTML="<div class='msg-header'><span class='msg-role'>"+m.role+"</span><span class='msg-date'>"+m.date+"</span><span class='msg-urgence "+(urgCls[m.urgence]||"urgence-normal")+"'>"+(urgLabels[m.urgence]||"Normal")+"</span><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0;margin-left:auto;'>✕</button></div><div class='msg-text'>"+m.txt+"</div>";
+    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].attente.splice(i2,1);renderAttente();saveData();};})(i);
+    el.appendChild(d);
+  });
+}
+
+function clearAllAttente(){
+  if(!confirm("Effacer tous les messages de liaison ?"))return;
+  kids[idx].attente=[];
+  renderAttente();
+  saveData();
 }
 
 function render(){
