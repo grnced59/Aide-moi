@@ -748,7 +748,7 @@ function addMed(){
   var dosage=prompt("Posologie :")||"";
   var moment=prompt("Moment (matin / midi / soir / autre) :")||"";
   var horaires=moment?[moment]:[];
-  kids[idx].meds.push({n:nom,d:dosage,h:horaires});
+  kids[idx].meds.push({n:nom,d:dosage,h:horaires,given:false});
   renderMeds();
   saveData();
 }
@@ -766,6 +766,13 @@ function addHoraireMed(medIndex){
   }else{
     alert("Cet horaire existe déjà pour ce médicament.");
   }
+}
+
+function toggleMedGiven(medIndex){
+  if(medIndex<0||medIndex>=kids[idx].meds.length)return;
+  kids[idx].meds[medIndex].given=!kids[idx].meds[medIndex].given;
+  renderMeds();
+  saveData();
 }
 
 function removeHoraireMed(medIndex,horIndex){
@@ -840,9 +847,13 @@ function renderMeds(){
       horairesHtml+="</div>";
     }
     
+    var checkboxId="med-checkbox-"+i;
     var d=document.createElement("div");d.className="med-row";
     d.style.flexDirection="column";d.style.alignItems="flex-start";d.style.gap="8px";
-    d.innerHTML="<div style='width:100%;'><div class='mname'>"+m.n+"</div><div class='mdose'>"+m.d+"</div></div>"+horairesHtml+"<button type='button' style='background:none;border:none;color:inherit;font-size:12px;padding:0;margin-top:4px;opacity:.7;cursor:pointer;text-decoration:underline;'>+ Ajouter un horaire</button>";
+    d.innerHTML="<div style='width:100%;display:flex;align-items:flex-start;gap:8px;'><input type='checkbox' id='"+checkboxId+"' style='margin-top:2px;cursor:pointer;' "+(m.given?"checked":"")+"><div><div class='mname'>"+m.n+"</div><div class='mdose'>"+m.d+"</div></div></div>"+horairesHtml+"<button type='button' style='background:none;border:none;color:inherit;font-size:12px;padding:0;margin-top:4px;opacity:.7;cursor:pointer;text-decoration:underline;'>+ Ajouter un horaire</button>";
+    
+    var checkbox=d.querySelector("input[type='checkbox']");
+    checkbox.onclick=(function(i2){return function(){toggleMedGiven(i2);};})(i);
     
     var addBtn=d.querySelector("button[type='button']");
     if(addBtn) addBtn.onclick=(function(i2){return function(){addHoraireMed(i2);};})(i);
