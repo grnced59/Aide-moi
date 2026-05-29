@@ -64,8 +64,13 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .tlabel{font-size:14px;flex:1;}
 .tlabel.done{text-decoration:line-through;opacity:.6;}
 .ttime{font-size:12px;opacity:.8;}
-.rdv-row{display:flex;gap:12px;padding:9px 0;border-bottom:1.5px solid rgba(255,255,255,.3);align-items:flex-start;}
-.rdv-row:last-child{border-bottom:none;padding-bottom:0;}
+.timeline-wrap{position:relative;padding-left:56px;}
+.timeline-wrap::before{content:"";position:absolute;left:39px;top:14px;bottom:14px;width:2px;background:rgba(255,255,255,.3);border-radius:2px;}
+.timeline-item{position:relative;display:flex;align-items:center;gap:8px;padding:8px 0 8px 4px;}
+.timeline-item+.timeline-item{border-top:1px solid rgba(255,255,255,.15);}
+.tl-time{position:absolute;left:-56px;width:34px;text-align:right;font-size:11px;font-weight:600;line-height:1.2;white-space:nowrap;}
+.tl-dot{position:absolute;left:-16px;width:10px;height:10px;border-radius:50%;background:white;box-shadow:0 0 0 2px rgba(255,255,255,.4);flex-shrink:0;transition:opacity .2s;}
+.tl-dot.done{opacity:.3;}
 .dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0;background:white;}
 .rtitle{font-size:14px;font-weight:600;}
 .rmeta{font-size:12px;opacity:.8;margin-top:2px;}
@@ -348,13 +353,11 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   <div class="nav" style="grid-template-columns:repeat(3,1fr);">
     <button class="nav-btn" style="background:#EEEDFE;color:#3C3489;" onclick="showTab('profil')">Profil</button>
     <button class="nav-btn" style="background:#E1F5EE;color:#085041;" onclick="showTab('taches')">Tâches</button>
-    <button class="nav-btn" style="background:#FAEEDA;color:#633806;" onclick="showTab('seances')">Séances</button>
     <button class="nav-btn" style="background:#FCEBEB;color:#791F1F;" onclick="showTab('medicaments')">Médicaments</button>
     <button class="nav-btn" style="background:#E6F1FB;color:#0C447C;" onclick="showTab('contacts')">Contacts</button>
     <button class="nav-btn" style="background:#FBEAF0;color:#72243E;" onclick="showTab('media')">Médias</button>
     <button class="nav-btn" style="background:#EAF3DE;color:#27500A;" onclick="showTab('journal')">Journal</button>
     <button class="nav-btn" style="background:#FAC775;color:#412402;" onclick="showTab('alimentation')">🍽 Aliments</button>
-    <button class="nav-btn" style="background:#ED93B1;color:#4B1528;" onclick="showTab('attente')">📋 Liaison</button>
     <button class="nav-btn" style="background:#F09595;color:#791F1F;font-weight:700;" onclick="showTab('urgence')">🚨 Urgence</button>
     <button class="nav-btn" style="background:#C0DD97;color:#173404;" onclick="showTab('partage')" id="nav-partage">🔗 Partage</button>
     <button class="nav-btn" style="background:#85B7EB;color:#0C447C;" onclick="showTab('chat')" id="nav-chat">💬 Chat <span id="chat-badge" style="display:none;background:#E24B4A;color:white;border-radius:10px;font-size:10px;padding:1px 5px;margin-left:2px;"></span></button>
@@ -374,12 +377,6 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     <div class="stitle">Aujourd'hui</div>
     <div class="card" id="r-tasks" style="background:#9FE1CB;color:#085041;"></div>
     <button class="add-btn" onclick="addTask()">+ Ajouter une tâche</button>
-  </div>
-
-  <div class="tab" id="tab-seances">
-    <div class="stitle">Prochains rendez-vous</div>
-    <div class="card" id="r-rdvs" style="background:#FAC775;color:#412402;"></div>
-    <button class="add-btn" onclick="addRdv()">+ Ajouter un rendez-vous</button>
   </div>
 
   <div class="tab" id="tab-medicaments">
@@ -427,6 +424,23 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     </div>
     <div class="stitle">Entrées précédentes</div>
     <div class="card" id="r-journal" style="background:#C0DD97;color:#173404;"></div>
+    <div class="stitle" style="margin-top:1rem;">Messages de liaison</div>
+    <div class="card" style="background:#FBEAF0;color:#72243E;margin-bottom:1rem;">
+      <div class="role-select">
+        <button class="role-btn sel" onclick="selRole(this,'Parent')">Parent</button>
+        <button class="role-btn" onclick="selRole(this,'Intervenant')">Intervenant</button>
+      </div>
+      <div class="urgence-select">
+        <span class="urgence-label">Urgence</span>
+        <button class="urg-btn sel" style="background:#ffffff;color:#72243E;" onclick="selUrg(this,'normal')">Normal</button>
+        <button class="urg-btn" style="background:#ffdba8;color:#633806;" onclick="selUrg(this,'important')">Important</button>
+        <button class="urg-btn" style="background:#f7c1c1;color:#791F1F;" onclick="selUrg(this,'urgent')">Urgent</button>
+      </div>
+      <textarea class="attente-input" id="attente-in" rows="3" placeholder="Écrire une consigne ou un retour de journée..."></textarea>
+      <button class="save-btn" onclick="saveAttente()">Publier</button>
+    </div>
+    <div class="stitle">Historique des messages</div>
+    <div class="msg-card" id="r-attente" style="background:#ED93B1;color:#4B1528;"></div>
   </div>
 
   <div class="tab" id="tab-alimentation">
@@ -444,26 +458,6 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     <div class="stitle" style="margin-top:1rem;">Hydratation du jour</div>
     <div class="card" id="r-hydro" style="background:#85B7EB;color:#042C53;"></div>
     <button class="add-btn" style="border-color:rgba(56,138,221,.3);background:#E6F1FB;color:#0C447C;" onclick="addBoisson()">+ Ajouter une boisson</button>
-  </div>
-
-  <div class="tab" id="tab-attente">
-    <div class="stitle">Messages de liaison</div>
-    <div class="card" style="background:#FBEAF0;color:#72243E;margin-bottom:1rem;">
-      <div class="role-select">
-        <button class="role-btn sel" onclick="selRole(this,'Parent')">Parent</button>
-        <button class="role-btn" onclick="selRole(this,'Intervenant')">Intervenant</button>
-      </div>
-      <div class="urgence-select">
-        <span class="urgence-label">Urgence</span>
-        <button class="urg-btn sel" style="background:#ffffff;color:#72243E;" onclick="selUrg(this,'normal')">Normal</button>
-        <button class="urg-btn" style="background:#ffdba8;color:#633806;" onclick="selUrg(this,'important')">Important</button>
-        <button class="urg-btn" style="background:#f7c1c1;color:#791F1F;" onclick="selUrg(this,'urgent')">Urgent</button>
-      </div>
-      <textarea class="attente-input" id="attente-in" rows="3" placeholder="Écrire une consigne ou un retour de journée..."></textarea>
-      <button class="save-btn" onclick="saveAttente()">Publier</button>
-    </div>
-    <div class="stitle">Historique</div>
-    <div class="msg-card" id="r-attente" style="background:#ED93B1;color:#4B1528;"></div>
   </div>
 
   <div class="tab" id="tab-urgence">
@@ -637,7 +631,6 @@ var kids=[
    dislikes:["Bruits forts","Changements imprévus","Lumière vive","Foule","Stress"],
    needs:["Kiné quotidienne","Communication PECS","Aide aux repas","Verticalisateur","Stimulations sensorielles douces"],
    tasks:[{done:true,label:"Médicament du matin",time:"7h30"},{done:false,label:"Kinésithérapie — membres inférieurs",time:"9h00"},{done:false,label:"Séance d'orthophonie",time:"11h00"},{done:false,label:"Repas du midi — aide complète",time:"12h00"},{done:false,label:"Verticalisateur 20 min",time:"14h30"},{done:false,label:"Musicothérapie",time:"16h00"}],
-   rdvs:[{t:"Kinésithérapie",m:"Chaque matin · M. Renaud"},{t:"Orthophonie",m:"Lundi & jeudi · Mme Leblanc"},{t:"Neuropédiatre",m:"15 mai 10h00 · Dr Moreau"},{t:"Appareillage",m:"22 mai 14h00 · Centre orthopédique"}],
    meds:[{n:"Baclofène",d:"10 mg · 2 cp",h:["Matin"]},{n:"Mélatonine",d:"2 mg · 1 gél",h:["Soir"]},{n:"Vitamine D",d:"1000 UI · 1 goutte",h:["Midi"]},{n:"Valproate",d:"200 mg · 1 cp",h:["Soir"]}],
    contacts:[{i:"DM",n:"Dr Moreau",r:"Neuropédiatre",t:"01 42 33 55 12"},{i:"LB",n:"Mme Leblanc",r:"Orthophoniste",t:"01 55 87 21 40"},{i:"MR",n:"M. Renaud",r:"Kinésithérapeute",t:"01 44 22 87 30"},{i:"IME",n:"IME Les Pins",r:"Directrice · Mme Aubert",t:"01 60 33 44 20"}],
    media:[{ic:"♪",t:"Playlist musicothérapie Hugo",d:"Musique douce et apaisante"},{ic:"▶",t:"Relaxation guidée",d:"Séance 10 min avant le coucher"},{ic:"♪",t:"Sons de la nature",d:"Forêt, pluie, oiseaux"}],
@@ -739,7 +732,6 @@ function createNewProfile(prenom, age, diag) {
     dislikes: [],
     needs: [],
     tasks: [],
-    rdvs: [],
     meds: [],
     contacts: [],
     media: [],
@@ -1076,14 +1068,6 @@ function addTask(){
   saveData();
 }
 
-function addRdv(){
-  var titre=prompt("Type de rendez-vous (ex: Kiné) :");if(!titre)return;
-  var detail=prompt("Détail / fréquence :")||"";
-  kids[idx].rdvs.push({t:titre,m:detail});
-  renderRdvs();
-  saveData();
-}
-
 function addMed(){
   var nom=prompt("Nom du médicament :");if(!nom)return;
   var dosage=prompt("Posologie :")||"";
@@ -1182,27 +1166,31 @@ function addMedia(){
   saveData();
 }
 
+function parseTaskTime(s){
+  if(!s)return Infinity;
+  var m=s.match(/(\d+)[h:](\d*)/);
+  return m?parseInt(m[1])*60+(parseInt(m[2])||0):Infinity;
+}
 function renderTasks(){
   var k=kids[idx],el=document.getElementById("r-tasks");el.innerHTML="";
   if(!k.tasks.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucune tâche.</div>";return;}
-  k.tasks.forEach(function(t,i){
-    var d=document.createElement("div");d.className="task-row";
-    d.innerHTML="<div class='chk"+(t.done?" done":"")+"'></div><div class='tlabel"+(t.done?" done":"")+"'>"+t.label+"</div><div class='ttime'>"+t.time+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector(".chk").onclick=function(){t.done=!t.done;this.classList.toggle("done");this.nextElementSibling.classList.toggle("done");saveData();};
+  var sorted=k.tasks.map(function(t,i){return {t:t,i:i};}).sort(function(a,b){return parseTaskTime(a.t.time)-parseTaskTime(b.t.time);});
+  var wrap=document.createElement("div");wrap.className="timeline-wrap";
+  sorted.forEach(function(item){
+    var t=item.t,i=item.i;
+    var d=document.createElement("div");d.className="timeline-item";
+    d.innerHTML="<div class='tl-time'>"+t.time+"</div><div class='tl-dot"+(t.done?" done":"")+"'></div><div class='chk"+(t.done?" done":"")+"'></div><div class='tlabel"+(t.done?" done":"")+"' style='flex:1;'>"+t.label+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
+    d.querySelector(".chk").onclick=function(){
+      t.done=!t.done;
+      this.classList.toggle("done");
+      this.nextElementSibling.classList.toggle("done");
+      d.querySelector(".tl-dot").classList.toggle("done");
+      saveData();
+    };
     d.querySelector("button").onclick=(function(i2){return function(){kids[idx].tasks.splice(i2,1);renderTasks();saveData();};})(i);
-    el.appendChild(d);
+    wrap.appendChild(d);
   });
-}
-
-function renderRdvs(){
-  var k=kids[idx],el=document.getElementById("r-rdvs");el.innerHTML="";
-  if(!k.rdvs.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucun rendez-vous.</div>";return;}
-  k.rdvs.forEach(function(r,i){
-    var d=document.createElement("div");d.className="rdv-row";
-    d.innerHTML="<div class='dot'></div><div style='flex:1'><div class='rtitle'>"+r.t+"</div><div class='rmeta'>"+r.m+"</div></div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].rdvs.splice(i2,1);renderRdvs();saveData();};})(i);
-    el.appendChild(d);
-  });
+  el.appendChild(wrap);
 }
 
 function renderMeds(){
@@ -1589,7 +1577,7 @@ function render(){
   renderBar();renderHeader();
   var k=kids[idx];
   renderTags("r-likes",k.likes,"tl");renderTags("r-dislikes",k.dislikes,"td");renderTags("r-needs",k.needs,"tn");
-  renderTasks();renderRdvs();renderMeds();renderContacts();renderMedia();renderJournal();
+  renderTasks();renderMeds();renderContacts();renderMedia();renderJournal();
   renderFoodList("r-food-ok",k.foodOk,"fb-ok","✓ Accepté");
   renderFoodList("r-food-no",k.foodNo,"fb-no","✗ Refusé");
   renderTags("r-regimes",k.regimes,"tn");
@@ -2111,7 +2099,6 @@ function makeChildSections(k){
   var contacts=safeArr(k.contacts).map(function(c){c=c||{};return (c.n||"Contact")+" - "+(c.r||"Rôle non renseigné")+" - "+(c.t||"Téléphone non renseigné");});
   var urgContacts=safeArr(k.urgContacts).map(function(c){c=c||{};return (c.nom||"Contact urgence")+" - "+(c.tel||"Téléphone non renseigné");});
   var tasks=safeArr(k.tasks).map(function(t){t=t||{};return (t.done?"[Fait] ":"[À faire] ")+(t.label||"Tâche")+" - "+(t.time||"Heure non renseignée");});
-  var rdvs=safeArr(k.rdvs).map(function(r){r=r||{};return (r.t||"Rendez-vous")+" - "+(r.m||"Détail non renseigné");});
   var meds=safeArr(k.meds).map(function(m){m=m||{};var horaires=(Array.isArray(m.h)&&m.h.length>0)?m.h.join(", "):(m.w||"Moment non renseigné");return (m.n||"Médicament")+" - "+(m.d||"Posologie non renseignée")+" - "+horaires;});
   var media=safeArr(k.media).map(function(m){m=m||{};return (m.t||"Média")+" - "+(m.d||"Détail non renseigné");});
   var journal=safeArr(k.journal).map(function(j){j=j||{};return (j.date||"Date non renseignée")+" - "+(j.mood||"")+" "+(j.txt||"");});
@@ -2133,7 +2120,6 @@ function makeChildSections(k){
     {title:"Identité et informations principales",accent:[83,74,183],bg:[238,237,254],lines:asList(identity)},
     {title:"Préférences et besoins",accent:[8,80,65],bg:[225,245,238],lines:asList(["Aime: "+asList(k.likes,"Aucun").join(", "),"N'aime pas: "+asList(k.dislikes,"Aucun").join(", "),"Besoins: "+asList(k.needs,"Aucun").join(", ")])},
     {title:"Suivi quotidien",accent:[39,80,10],bg:[234,243,222],lines:asList(tasks)},
-    {title:"Rendez-vous et séances",accent:[99,56,6],bg:[250,238,218],lines:asList(rdvs)},
     {title:"Traitements",accent:[75,21,40],bg:[251,234,240],lines:asList(meds)},
     {title:"Contacts",accent:[12,68,124],bg:[230,241,251],lines:asList(contacts)},
     {title:"Alimentation et hydratation",accent:[66,36,2],bg:[250,199,117],lines:asList(["Aliments appréciés: "+asList(k.foodOk,"Aucun").join(", "),"Aliments refusés: "+asList(k.foodNo,"Aucun").join(", "),"Textures / régimes: "+asList(k.regimes,"Aucun").join(", "),"Repas: "+asList(repas,"Aucun").join(" | "),"Hydratation: "+asList(hydro,"Aucune").join(" | ")])},
