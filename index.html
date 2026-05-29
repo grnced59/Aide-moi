@@ -409,8 +409,8 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   </div>
 
   <div class="tab" id="tab-journal">
-    <div class="stitle">Nouvelle note</div>
-    <div class="card" style="background:#AFA9EC;color:#26215C;margin-bottom:1rem;">
+    <div class="stitle">Messages de liaison</div>
+    <div class="card" style="background:#FBEAF0;color:#72243E;margin-bottom:1rem;">
       <div style="font-size:12px;opacity:.8;margin-bottom:6px;font-weight:500;">Humeur du jour</div>
       <div class="mood-row" id="moods">
         <span class="mood-btn" onclick="selMood(this)">😊</span>
@@ -419,14 +419,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
         <span class="mood-btn" onclick="selMood(this)">😤</span>
         <span class="mood-btn" onclick="selMood(this)">😴</span>
       </div>
-      <textarea class="new-note" id="note-in" rows="3" placeholder="Comment s'est passée la journée ?"></textarea>
-      <button class="save-btn" onclick="saveNote()">Enregistrer</button>
-    </div>
-    <div class="stitle">Entrées précédentes</div>
-    <div class="card" id="r-journal" style="background:#C0DD97;color:#173404;"></div>
-    <div class="stitle" style="margin-top:1rem;">Messages de liaison</div>
-    <div class="card" style="background:#FBEAF0;color:#72243E;margin-bottom:1rem;">
-      <div class="role-select">
+      <div class="role-select" style="margin-top:10px;">
         <button class="role-btn sel" onclick="selRole(this,'Parent')">Parent</button>
         <button class="role-btn" onclick="selRole(this,'Intervenant')">Intervenant</button>
       </div>
@@ -1281,29 +1274,7 @@ function openMedia(i){
   openYTModal(url,media.t);
 }
 
-function renderJournal(){
-  var k=kids[idx],el=document.getElementById("r-journal");el.innerHTML="";
-  if(!k.journal.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucune entrée.</div>";return;}
-  k.journal.forEach(function(e,i){
-    var d=document.createElement("div");d.className="jentry";
-    d.innerHTML="<div style='display:flex;justify-content:space-between;align-items:start'><div class='jdate'>"+e.date+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0;line-height:1;'>✕</button></div><div class='jtext'>"+e.mood+" "+e.txt+"</div>";
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].journal.splice(i2,1);renderJournal();saveData();};})(i);
-    el.appendChild(d);
-  });
-}
-
 function selMood(el){document.querySelectorAll(".mood-btn").forEach(function(b){b.classList.remove("sel");});el.classList.add("sel");}
-
-function saveNote(){
-  var txt=document.getElementById("note-in").value.trim();if(!txt)return;
-  var m=document.querySelector(".mood-btn.sel");var mood=m?m.textContent:"📝";
-  var today=new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"});
-  kids[idx].journal.unshift({date:today,mood:mood,txt:txt});
-  document.getElementById("note-in").value="";
-  document.querySelectorAll(".mood-btn").forEach(function(b){b.classList.remove("sel");});
-  renderJournal();
-  saveData();
-}
 
 function openEdit(){
   var k=kids[idx];
@@ -1577,7 +1548,7 @@ function render(){
   renderBar();renderHeader();
   var k=kids[idx];
   renderTags("r-likes",k.likes,"tl");renderTags("r-dislikes",k.dislikes,"td");renderTags("r-needs",k.needs,"tn");
-  renderTasks();renderMeds();renderContacts();renderMedia();renderJournal();
+  renderTasks();renderMeds();renderContacts();renderMedia();
   renderFoodList("r-food-ok",k.foodOk,"fb-ok","✓ Accepté");
   renderFoodList("r-food-no",k.foodNo,"fb-no","✗ Refusé");
   renderTags("r-regimes",k.regimes,"tn");
