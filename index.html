@@ -1631,13 +1631,14 @@ var photoCropState={
 
 function openPhotoCropModal(photoData){
   photoCropState.originalData=photoData;
-  photoCropState.zoom=100;
+  photoCropState.zoom=130;
   photoCropState.offsetX=0;
   photoCropState.offsetY=0;
   document.getElementById("photo-crop-img").src=photoData;
-  document.getElementById("photo-crop-zoom").value=100;
+  document.getElementById("photo-crop-zoom").value=130;
   document.getElementById("photo-crop-overlay").classList.add("active");
   setupPhotoCropDrag();
+  updatePhotoCropDisplay();
 }
 
 function closePhotoCropModal(){
@@ -2922,8 +2923,8 @@ async function generateRecapPdf(orientation){
     </div>
     <div class="photo-crop-controls">
       <div style="font-size:12px;color:#534AB7;font-weight:600;">Zoom</div>
-      <input type="range" id="photo-crop-zoom" class="photo-crop-slider" min="100" max="300" value="100">
-      <div style="font-size:11px;color:#999;text-align:center;">Glissez l'image pour centrer</div>
+      <input type="range" id="photo-crop-zoom" class="photo-crop-slider" min="110" max="300" value="130">
+      <div style="font-size:11px;color:#999;text-align:center;">Glissez pour repositionner · Pincez pour zoomer</div>
     </div>
     <div class="photo-crop-buttons">
       <button class="photo-crop-btn photo-crop-cancel" onclick="closePhotoCropModal()">✕ Annuler</button>
