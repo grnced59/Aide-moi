@@ -1,16 +1,16 @@
 // ─────────────────────────────────────────────────────────────────
 //  MODULE COMPRESS — compression canvas des images avant stockage
-//  Règle : toute image doit tenir en 2 Mo maximum.
+//  Règle : toute image doit tenir en 50 Mo maximum.
 //  Compression progressive : qualité puis dimensions réduites.
 // ─────────────────────────────────────────────────────────────────
 
 var Compress = (function () {
 
-  var MAX_BYTES = 2 * 1024 * 1024; // 2 Mo
+  var MAX_BYTES = 50 * 1024 * 1024; // 50 Mo
 
   // ── API publique ─────────────────────────────────────────────────
   // compress.image(file, options?) → Promise<{dataUrl, sizeKb}>
-  // options.maxBytes : limite en octets (défaut 2 Mo)
+  // options.maxBytes : limite en octets (défaut 50 Mo)
   // options.maxDim   : dimension max (largeur ou hauteur) avant compression (défaut 1920)
   function image(file, options) {
     options = options || {};
@@ -69,7 +69,7 @@ var Compress = (function () {
     function tryNext(i) {
       if (i >= attempts.length) {
         reject(new Error(
-          "Impossible de compresser cette image sous 2 Mo.\n" +
+          "Impossible de compresser cette image sous 50 Mo.\n" +
           "Merci de choisir une image plus petite."
         ));
         return;

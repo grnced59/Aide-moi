@@ -246,6 +246,87 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .pdf-opt strong{display:block;font-size:14px;}
 .pdf-close{margin-top:8px;width:100%;padding:9px 12px;border-radius:12px;border:1.5px solid #F5C4B3;background:#FFF4F0;color:#712B13;font-size:12px;font-weight:600;cursor:pointer;}
 
+.photo-crop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;padding:1rem;flex-direction:column;}
+.photo-crop-overlay.active{display:flex;}
+.photo-crop-card{width:min(400px,100%);background:white;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;max-height:85vh;}
+.photo-crop-header{background:#534AB7;color:white;padding:12px 16px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between;}
+.photo-crop-close{background:none;border:none;color:white;font-size:18px;cursor:pointer;}
+.photo-crop-preview{width:100%;height:280px;background:#f0f0f0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.photo-crop-image{width:100%;height:100%;object-fit:cover;cursor:grab;user-select:none;}
+.photo-crop-image.dragging{cursor:grabbing;}
+.photo-crop-controls{padding:12px 16px;background:#F7F5FF;border-top:1px solid #E6E0FF;display:flex;flex-direction:column;gap:8px;}
+.photo-crop-slider{width:100%;height:6px;border-radius:3px;background:#AFA9EC;outline:none;}
+.photo-crop-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 12px;}
+.photo-crop-btn{padding:10px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-weight:600;}
+.photo-crop-cancel{background:#E6E0FF;color:#3C3489;}
+.photo-crop-apply{background:#534AB7;color:white;}
+
+.ordo-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;align-items:center;justify-content:center;padding:1rem;}
+.ordo-modal-overlay.active{display:flex;}
+.ordo-modal-card{width:min(420px,100%);background:#FCEBEB;border-radius:18px;padding:1.5rem;border:2px solid #F09595;max-height:85vh;overflow-y:auto;}
+.ordo-modal-title{font-size:16px;font-weight:700;color:#791F1F;margin-bottom:1rem;}
+.ordo-form-group{margin-bottom:12px;display:flex;flex-direction:column;}
+.ordo-form-label{font-size:12px;font-weight:600;color:#791F1F;margin-bottom:4px;}
+.ordo-form-input{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #F09595;background:#FFF;color:#791F1F;font-size:13px;font-family:inherit;}
+.ordo-form-input::placeholder{color:#A32D2D;opacity:.6;}
+.ordo-meds-section{margin:12px 0;padding:12px;background:rgba(240,149,149,.2);border-radius:10px;}
+.ordo-meds-label{font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px;}
+.ordo-med-item{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.ordo-med-item:last-child{margin-bottom:0;}
+.ordo-med-input{flex:1;padding:8px 10px;border-radius:8px;border:1px solid #F09595;background:#FFF;color:#791F1F;font-size:12px;font-family:inherit;}
+.ordo-med-remove{padding:6px;background:#E24B4A;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;}
+.ordo-add-med-btn{width:100%;padding:8px;margin-top:8px;border-radius:8px;border:2px dashed #F09595;background:transparent;color:#791F1F;font-size:12px;cursor:pointer;font-weight:600;}
+.ordo-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.ordo-modal-btn{padding:10px 12px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-weight:600;}
+.ordo-modal-save{background:#E24B4A;color:white;}
+.ordo-modal-cancel{background:#F7C1C1;color:#791F1F;}
+
+.urg-contact-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;align-items:center;justify-content:center;padding:1rem;}
+.urg-contact-modal-overlay.active{display:flex;}
+.urg-contact-modal-card{width:min(420px,100%);background:#FCEBEB;border-radius:18px;padding:1.5rem;border:2px solid #F09595;max-height:85vh;overflow-y:auto;}
+.urg-contact-modal-title{font-size:16px;font-weight:700;color:#791F1F;margin-bottom:1rem;}
+.urg-contact-form-group{margin-bottom:12px;display:flex;flex-direction:column;}
+.urg-contact-form-label{font-size:12px;font-weight:600;color:#791F1F;margin-bottom:4px;}
+.urg-contact-form-input{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #F09595;background:#FFF;color:#791F1F;font-size:13px;font-family:inherit;}
+.urg-contact-form-input::placeholder{color:#A32D2D;opacity:.6;}
+.urg-contact-type-select{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.urg-contact-type-btn{padding:10px;border-radius:10px;border:2px solid #F09595;background:#FFF;color:#791F1F;font-size:12px;cursor:pointer;font-weight:600;}
+.urg-contact-type-btn.selected{background:#E24B4A;color:white;border-color:#E24B4A;}
+.urg-contact-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.urg-contact-modal-btn{padding:10px 12px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-weight:600;}
+.urg-contact-modal-save{background:#E24B4A;color:white;}
+.urg-contact-modal-cancel{background:#F7C1C1;color:#791F1F;}
+
+.urg-note-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;align-items:center;justify-content:center;padding:1rem;}
+.urg-note-modal-overlay.active{display:flex;}
+.urg-note-modal-card{width:min(420px,100%);background:#FCEBEB;border-radius:18px;padding:1.5rem;border:2px solid #F09595;}
+.urg-note-modal-title{font-size:16px;font-weight:700;color:#791F1F;margin-bottom:1rem;}
+.urg-note-modal-textarea{width:100%;padding:12px;border-radius:10px;border:1.5px solid #F09595;background:#FFF;color:#791F1F;font-size:13px;font-family:inherit;resize:vertical;min-height:120px;margin-bottom:12px;}
+.urg-note-modal-textarea::placeholder{color:#A32D2D;opacity:.6;}
+.urg-note-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.urg-note-modal-btn{padding:10px 12px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-weight:600;}
+.urg-note-modal-save{background:#E24B4A;color:white;}
+.urg-note-modal-cancel{background:#F7C1C1;color:#791F1F;}
+
+.share-section{background:#EEEDFE;border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.share-title{font-size:14px;font-weight:700;color:#3C3489;margin-bottom:12px;}
+.share-btn{width:100%;padding:12px;border-radius:12px;border:none;font-size:13px;cursor:pointer;font-weight:600;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.share-btn-generate{background:#7F77DD;color:white;}
+.share-btn-import{background:#B5D4F4;color:#0C447C;}
+.share-code-display{background:white;border:2px solid #AFA9EC;border-radius:12px;padding:12px;margin:10px 0;text-align:center;font-family:monospace;font-weight:700;font-size:14px;color:#3C3489;word-break:break-all;}
+.share-copy-btn{width:100%;padding:8px;border-radius:10px;border:none;background:#C0DD97;color:#173404;font-size:12px;cursor:pointer;font-weight:600;margin-bottom:10px;}
+.share-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;align-items:center;justify-content:center;padding:1rem;}
+.share-modal-overlay.active{display:flex;}
+.share-modal-card{width:min(420px,100%);background:white;border-radius:18px;padding:1.5rem;border:2px solid #AFA9EC;max-height:85vh;overflow-y:auto;}
+.share-modal-title{font-size:16px;font-weight:700;color:#3C3489;margin-bottom:1rem;}
+.share-modal-label{font-size:12px;font-weight:600;color:#534AB7;margin-bottom:4px;}
+.share-modal-textarea{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #AFA9EC;background:#F7F5FF;color:#3C3489;font-size:12px;font-family:monospace;resize:vertical;min-height:80px;margin-bottom:12px;}
+.share-modal-textarea::placeholder{color:#999;}
+.share-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.share-modal-btn{padding:10px 12px;border-radius:10px;border:none;font-size:13px;cursor:pointer;font-weight:600;}
+.share-modal-save{background:#7F77DD;color:white;}
+.share-modal-cancel{background:#E6E0FF;color:#3C3489;}
+
 @media (max-width:380px){
   .app{padding-left:.75rem;padding-right:.75rem;}
   .top-banner{padding:.9rem 1rem;}
@@ -545,13 +626,35 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 
   <!-- ── Onglet Partage (Phase 3) ── -->
   <div class="tab" id="tab-partage">
-    <div class="card" style="background:#EEEDFE;color:#3C3489;text-align:center;padding:2rem 1.5rem;">
-      <div style="font-size:40px;margin-bottom:12px;">🔗</div>
-      <div style="font-weight:600;font-size:16px;margin-bottom:8px;">Partage des fiches</div>
-      <div style="font-size:13px;opacity:.75;line-height:1.5;">
-        Partagez l'accès à la fiche de cet enfant avec un intervenant, un parent ou un médecin.<br><br>
-        Disponible après connexion à votre compte cloud.
+    <div class="stitle">Partage local de fiche</div>
+    <div class="share-section">
+      <div class="share-title">🔗 Générer un code de partage</div>
+      <p style="font-size:12px;color:#534AB7;margin-bottom:12px;opacity:.8;">Créez un code unique pour partager cette fiche avec d'autres appareils ou personnes (lecture seule).</p>
+      <button class="share-btn share-btn-generate" onclick="generateShareCode()">🔐 Générer un code de partage</button>
+      <div id="share-code-container" style="display:none;">
+        <div style="font-size:11px;color:#534AB7;margin-bottom:4px;opacity:.8;">Votre code de partage :</div>
+        <div class="share-code-display" id="share-code-display">—</div>
+        <button class="share-copy-btn" onclick="copyShareCode()">📋 Copier le code</button>
       </div>
+    </div>
+
+    <div class="share-section">
+      <div class="share-title">📥 Importer une fiche partagée</div>
+      <p style="font-size:12px;color:#534AB7;margin-bottom:12px;opacity:.8;">Collez un code de partage pour consulter une fiche en lecture seule.</p>
+      <button class="share-btn share-btn-import" onclick="showImportModal()">📱 Importer une fiche</button>
+    </div>
+
+    <div class="share-section">
+      <div class="share-title">💾 Exporter les données</div>
+      <p style="font-size:12px;color:#534AB7;margin-bottom:12px;opacity:.8;">Sauvegardez toutes vos données en fichier JSON pour une sauvegarde ou un transfert.</p>
+      <button class="share-btn" style="background:#9FE1CB;color:#085041;" onclick="exportAllData()">⬇️ Exporter en JSON</button>
+    </div>
+
+    <div class="share-section">
+      <div class="share-title">📤 Importer une sauvegarde</div>
+      <p style="font-size:12px;color:#534AB7;margin-bottom:12px;opacity:.8;">Chargez un fichier JSON sauvegardé précédemment.</p>
+      <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importFromFile()">
+      <button class="share-btn" style="background:#F5C4B3;color:#712B13;" onclick="document.getElementById('import-file').click()">⬆️ Charger depuis fichier</button>
     </div>
   </div>
 
@@ -915,21 +1018,85 @@ function renderUrgContacts(){
   k.urgContacts.forEach(function(c,i){
     var safeTel=formatTelHref(c.tel);
     var d=document.createElement("div");d.className="urg-ct";
-    d.innerHTML="<div class='urg-ct-av' style='background:#F7C1C1;'>"+c.icone+"</div><div style='flex:1'><div class='urg-ct-name'>"+c.nom+"</div><div class='urg-ct-tel'>"+c.tel+"</div></div><a href='tel:"+safeTel+"' style='text-decoration:none;background:#E24B4A;color:white;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;' aria-label='Appeler "+c.nom+"'>Appeler</a><button style='background:none;border:none;color:#791F1F;opacity:.6;cursor:pointer;font-size:16px;padding:0 6px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button").onclick=(function(i2){return function(){if(confirm("Supprimer ce contact d'urgence ?")){kids[idx].urgContacts.splice(i2,1);renderUrgContacts();saveData();}};})(i);
+    d.innerHTML="<div class='urg-ct-av' style='background:#F7C1C1;'>"+c.icone+"</div><div style='flex:1'><div class='urg-ct-name'>"+c.nom+"</div><div class='urg-ct-tel'>"+c.tel+"</div></div>"
+      +"<button style='background:#B5D4F4;color:#0C447C;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700;border:none;cursor:pointer;margin-right:4px;' onclick='editUrgContactModal("+i+")'>✏️ Modifier</button>"
+      +"<a href='tel:"+safeTel+"' style='text-decoration:none;background:#E24B4A;color:white;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;' aria-label='Appeler "+c.nom+"'>Appeler</a>"
+      +"<button style='background:none;border:none;color:#791F1F;opacity:.6;cursor:pointer;font-size:16px;padding:0 6px;flex-shrink:0;'>✕</button>";
+    d.querySelector("button:last-child").onclick=(function(i2){return function(){if(confirm("Supprimer ce contact d'urgence ?")){kids[idx].urgContacts.splice(i2,1);renderUrgContacts();saveData();}};})(i);
     el.appendChild(d);
   });
 }
 
 function addUrgContact(){
-  var nom=prompt("Nom du contact (ex: SAMU) :");if(!nom)return;
-  var tel=prompt("Numéro de téléphone :");if(!tel)return;
+  openUrgContactModal();
+}
+
+var urgContactModalEditIndex=-1;
+var urgContactSelectedType="samu";
+
+function openUrgContactModal(){
+  urgContactModalEditIndex=-1;
+  urgContactSelectedType="samu";
+  document.getElementById("urg-contact-modal-title").textContent="Ajouter un contact d'urgence";
+  document.getElementById("urg-contact-nom").value="";
+  document.getElementById("urg-contact-tel").value="";
+  updateUrgContactTypeButtons("samu");
+  document.getElementById("urg-contact-modal-overlay").classList.add("active");
+}
+
+function editUrgContactModal(i){
+  urgContactModalEditIndex=i;
+  var c=kids[idx].urgContacts[i];
+  document.getElementById("urg-contact-modal-title").textContent="Modifier le contact d'urgence";
+  document.getElementById("urg-contact-nom").value=c.nom||"";
+  document.getElementById("urg-contact-tel").value=c.tel||"";
+  var iconeMap={"🏥":"samu","👩‍⚕️":"medecin","💊":"pharmacie","👨‍👩‍👧":"famille","📞":"autre"};
+  urgContactSelectedType=iconeMap[c.icone]||"autre";
+  updateUrgContactTypeButtons(urgContactSelectedType);
+  document.getElementById("urg-contact-modal-overlay").classList.add("active");
+}
+
+function selectUrgContactType(type){
+  urgContactSelectedType=type;
+  updateUrgContactTypeButtons(type);
+}
+
+function updateUrgContactTypeButtons(type){
+  document.querySelectorAll(".urg-contact-type-btn").forEach(function(btn){
+    if(btn.dataset.type===type){
+      btn.classList.add("selected");
+    }else{
+      btn.classList.remove("selected");
+    }
+  });
+}
+
+function closeUrgContactModal(event){
+  if(event&&event.target!==event.currentTarget)return;
+  document.getElementById("urg-contact-modal-overlay").classList.remove("active");
+}
+
+function saveUrgContactFromModal(){
+  var nom=document.getElementById("urg-contact-nom").value.trim();
+  var tel=document.getElementById("urg-contact-tel").value.trim();
+  
+  if(!nom||!tel){
+    alert("Veuillez remplir tous les champs.");
+    return;
+  }
+  
   var icones={"samu":"🏥","medecin":"👩‍⚕️","pharmacie":"💊","famille":"👨‍👩‍👧","autre":"📞"};
-  var type=prompt("Type : samu / medecin / pharmacie / famille / autre")||"autre";
-  var icone=icones[type]||"📞";
-  kids[idx].urgContacts.push({icone:icone,nom:nom,tel:tel});
+  var icone=icones[urgContactSelectedType]||"📞";
+  
+  if(urgContactModalEditIndex>=0){
+    kids[idx].urgContacts[urgContactModalEditIndex]={nom:nom,tel:tel,icone:icone};
+  }else{
+    kids[idx].urgContacts.push({nom:nom,tel:tel,icone:icone});
+  }
+  
   renderUrgContacts();
   saveData();
+  closeUrgContactModal();
 }
 
 function renderOrdos(){
@@ -945,6 +1112,7 @@ function renderOrdos(){
     d.innerHTML="<div class='ordo-header'><div class='ordo-icon'>📋</div><div style='flex:1'><div class='ordo-title'>"+o.titre+"</div><div class='ordo-date'>Dr "+o.medecin+" · "+o.date+" → "+o.expiration+"</div></div><span class='ordo-badge "+badgeCls+"'>"+badgeTxt+"</span></div>"
       +"<div class='ordo-med-list'>"+medsHtml+"</div>"
       +"<div class='ordo-actions'>"
+      +"<button class='ordo-action-btn' style='background:#B5D4F4;color:#0C447C;' data-i='"+i+"' onclick='editOrdoModal("+i+")'>✏️ Modifier</button>"
       +"<button class='ordo-action-btn' style='background:#F7C1C1;color:#791F1F;' data-i='"+i+"' onclick='toggleOrdo("+i+")\'>"+(o.valide?"Marquer expirée":"Marquer valide")+"</button>"
       +"<button class='ordo-action-btn' style='background:#E24B4A;color:white;' data-i='"+i+"' onclick='deleteOrdo("+i+")'>Supprimer</button>"
       +"</div>";
@@ -955,17 +1123,93 @@ function renderOrdos(){
 function toggleOrdo(i){kids[idx].ordos[i].valide=!kids[idx].ordos[i].valide;renderOrdos();saveData();}
 function deleteOrdo(i){if(confirm("Supprimer cette ordonnance ?")){kids[idx].ordos.splice(i,1);renderOrdos();saveData();}}
 
-function addOrdo(){
-  var titre=prompt("Titre de l'ordonnance (ex: Traitement de fond) :");if(!titre)return;
-  var medecin=prompt("Nom du médecin :");if(!medecin)return;
-  var date=prompt("Date (ex: 10 avril 2026) :");if(!date)return;
-  var expiration=prompt("Date d'expiration (ex: 10 avril 2027) :");if(!expiration)return;
+var ordoModalEditIndex=-1;
+
+function openOrdoModal(){
+  ordoModalEditIndex=-1;
+  document.getElementById("ordo-modal-title").textContent="Ajouter une ordonnance";
+  document.getElementById("ordo-titre").value="";
+  document.getElementById("ordo-medecin").value="";
+  document.getElementById("ordo-date").value="";
+  document.getElementById("ordo-expiration").value="";
+  document.getElementById("ordo-meds-list").innerHTML="";
+  addMedLine();
+  document.getElementById("ordo-modal-overlay").classList.add("active");
+}
+
+function editOrdoModal(i){
+  ordoModalEditIndex=i;
+  var o=kids[idx].ordos[i];
+  document.getElementById("ordo-modal-title").textContent="Modifier l'ordonnance";
+  document.getElementById("ordo-titre").value=o.titre||"";
+  document.getElementById("ordo-medecin").value=o.medecin||"";
+  document.getElementById("ordo-date").value=o.date||"";
+  document.getElementById("ordo-expiration").value=o.expiration||"";
+  document.getElementById("ordo-meds-list").innerHTML="";
+  if(o.meds&&o.meds.length){
+    o.meds.forEach(function(m){
+      addMedLine(m);
+    });
+  }else{
+    addMedLine();
+  }
+  document.getElementById("ordo-modal-overlay").classList.add("active");
+}
+
+function addMedLine(value){
+  var medsList=document.getElementById("ordo-meds-list");
+  var idx=medsList.children.length;
+  var div=document.createElement("div");
+  div.className="ordo-med-item";
+  div.innerHTML="<input class='ordo-med-input' type='text' placeholder='ex: Antibiotique' value='"+(value||"")+"'>"
+    +"<button class='ordo-med-remove' onclick='removeMedLine(this)'>✕</button>";
+  medsList.appendChild(div);
+}
+
+function removeMedLine(btn){
+  btn.parentElement.remove();
+}
+
+function closeOrdoModal(event){
+  if(event&&event.target!==event.currentTarget)return;
+  document.getElementById("ordo-modal-overlay").classList.remove("active");
+}
+
+function saveOrdoFromModal(){
+  var titre=document.getElementById("ordo-titre").value.trim();
+  var medecin=document.getElementById("ordo-medecin").value.trim();
+  var date=document.getElementById("ordo-date").value.trim();
+  var expiration=document.getElementById("ordo-expiration").value.trim();
+  
+  if(!titre||!medecin||!date||!expiration){
+    alert("Veuillez remplir tous les champs.");
+    return;
+  }
+  
   var meds=[];
-  var m=prompt("Médicament 1 (laisser vide pour terminer) :");
-  while(m){meds.push(m);m=prompt("Médicament suivant (laisser vide pour terminer) :");}
-  kids[idx].ordos.push({titre:titre,medecin:medecin,date:date,expiration:expiration,valide:true,meds:meds});
+  document.querySelectorAll("#ordo-meds-list .ordo-med-input").forEach(function(input){
+    var val=input.value.trim();
+    if(val)meds.push(val);
+  });
+  
+  if(meds.length===0){
+    alert("Veuillez ajouter au moins un médicament.");
+    return;
+  }
+  
+  if(ordoModalEditIndex>=0){
+    kids[idx].ordos[ordoModalEditIndex]={titre:titre,medecin:medecin,date:date,expiration:expiration,meds:meds,valide:kids[idx].ordos[ordoModalEditIndex].valide};
+  }else{
+    kids[idx].ordos.push({titre:titre,medecin:medecin,date:date,expiration:expiration,meds:meds,valide:true});
+  }
+  
   renderOrdos();
   saveData();
+  closeOrdoModal();
+}
+
+function addOrdo(){
+  openOrdoModal();
 }
 
 function renderUrgNote(){
@@ -975,11 +1219,21 @@ function renderUrgNote(){
 }
 
 function editUrgNote(){
-  var note=prompt("Consignes d'urgence :",kids[idx].urgNote||"");
-  if(note===null)return;
+  document.getElementById("urg-note-textarea").value=kids[idx].urgNote||"";
+  document.getElementById("urg-note-modal-overlay").classList.add("active");
+}
+
+function closeUrgNoteModal(event){
+  if(event&&event.target!==event.currentTarget)return;
+  document.getElementById("urg-note-modal-overlay").classList.remove("active");
+}
+
+function saveUrgNoteFromModal(){
+  var note=document.getElementById("urg-note-textarea").value.trim();
   kids[idx].urgNote=note;
   renderUrgNote();
   saveData();
+  closeUrgNoteModal();
 }
 
 function renderHydro(){
@@ -1319,13 +1573,104 @@ function handleProfilePhotoChange(e){
   e.target.value="";
   if(!file)return;
   if(!/^image\//.test(file.type)){alert("Merci de choisir une image.");return;}
-  // Compression automatique jusqu'à 2 Mo, redimensionnement max 200 px (avatar)
-  Compress.image(file,{maxDim:200}).then(function(result){
-    kids[idx].photo=result.dataUrl;
-    saveData();render();
-  }).catch(function(err){
-    alert(err.message||"Impossible de traiter cette image.");
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      openPhotoCropModal(ev.target.result);
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+var photoCropState={
+  originalData:null,
+  zoom:100,
+  offsetX:0,
+  offsetY:0,
+  isDragging:false,
+  dragStart:{x:0,y:0}
+};
+
+function openPhotoCropModal(photoData){
+  photoCropState.originalData=photoData;
+  photoCropState.zoom=100;
+  photoCropState.offsetX=0;
+  photoCropState.offsetY=0;
+  document.getElementById("photo-crop-img").src=photoData;
+  document.getElementById("photo-crop-zoom").value=100;
+  document.getElementById("photo-crop-overlay").classList.add("active");
+  setupPhotoCropDrag();
+}
+
+function closePhotoCropModal(){
+  document.getElementById("photo-crop-overlay").classList.remove("active");
+  photoCropState.originalData=null;
+}
+
+function setupPhotoCropDrag(){
+  var img=document.getElementById("photo-crop-img");
+  var container=document.querySelector(".photo-crop-preview");
+  var zoomSlider=document.getElementById("photo-crop-zoom");
+  
+  zoomSlider.addEventListener("input",function(){
+    photoCropState.zoom=parseInt(this.value);
+    updatePhotoCropDisplay();
   });
+  
+  img.addEventListener("mousedown",function(e){
+    photoCropState.isDragging=true;
+    photoCropState.dragStart={x:e.clientX,y:e.clientY};
+    img.classList.add("dragging");
+  });
+  
+  document.addEventListener("mousemove",function(e){
+    if(!photoCropState.isDragging)return;
+    var dx=e.clientX-photoCropState.dragStart.x;
+    var dy=e.clientY-photoCropState.dragStart.y;
+    photoCropState.offsetX+=dx;
+    photoCropState.offsetY+=dy;
+    photoCropState.dragStart={x:e.clientX,y:e.clientY};
+    updatePhotoCropDisplay();
+  });
+  
+  document.addEventListener("mouseup",function(){
+    if(photoCropState.isDragging){
+      photoCropState.isDragging=false;
+      img.classList.remove("dragging");
+    }
+  });
+}
+
+function updatePhotoCropDisplay(){
+  var img=document.getElementById("photo-crop-img");
+  var scale=photoCropState.zoom/100;
+  img.style.transform="scale("+scale+") translate("+photoCropState.offsetX+"px,"+photoCropState.offsetY+"px)";
+}
+
+function applyPhotoCrop(){
+  try{
+    var canvas=document.createElement("canvas");
+    canvas.width=200;canvas.height=200;
+    var ctx=canvas.getContext("2d");
+    var img=new Image();
+    img.onload=function(){
+      var scale=photoCropState.zoom/100;
+      var x=(canvas.width/2)-(img.width*scale/2)-photoCropState.offsetX;
+      var y=(canvas.height/2)-(img.height*scale/2)-photoCropState.offsetY;
+      ctx.drawImage(img,x,y,img.width*scale,img.height*scale);
+      var dataUrl=canvas.toDataURL("image/jpeg",.9);
+      kids[idx].photo=dataUrl;
+      saveData();
+      render();
+      closePhotoCropModal();
+      alert("✓ Photo centrée et appliquée !");
+    };
+    img.src=photoCropState.originalData;
+  }catch(e){
+    alert("Erreur lors du traitement de la photo.");
+  }
 }
 
 (function(){
@@ -1450,6 +1795,96 @@ function exportData(){
     setTimeout(function(){try{document.body.removeChild(a);}catch(_){}URL.revokeObjectURL(url);},1500);
   }catch(e){alert("Erreur lors de l'export.");}
 }
+
+function generateShareCode(){
+  try{
+    var data={kids:kids,timestamp:new Date().toISOString()};
+    var json=JSON.stringify(data);
+    var b64=btoa(json);
+    var code=b64.slice(0,12)+"_"+b64.slice(12,24)+"_"+b64.slice(24,36);
+    var container=document.getElementById("share-code-container");
+    container.style.display="block";
+    document.getElementById("share-code-display").textContent=code;
+    localStorage.setItem("aideMoi_lastShareCode",code);
+    localStorage.setItem("aideMoi_lastShareData",b64);
+    alert("✓ Code de partage généré ! Les données sont prêtes à être partagées.");
+  }catch(e){alert("Erreur lors de la génération du code.");}
+}
+
+function copyShareCode(){
+  var code=document.getElementById("share-code-display").textContent;
+  if(code==="—")return;
+  navigator.clipboard.writeText(code).then(function(){
+    alert("✓ Code copié dans le presse-papiers !");
+  }).catch(function(){
+    alert("⚠ Copie manuelle requise : "+code);
+  });
+}
+
+function showImportModal(){
+  document.getElementById("share-import-input").value="";
+  document.getElementById("share-modal-overlay").classList.add("active");
+}
+
+function closeShareModal(event){
+  if(event&&event.target!==event.currentTarget)return;
+  document.getElementById("share-modal-overlay").classList.remove("active");
+}
+
+function importSharedCode(){
+  var code=document.getElementById("share-import-input").value.trim();
+  if(!code){alert("Veuillez coller un code de partage.");return;}
+  try{
+    var b64=code.replace(/_/g,"");
+    var json=atob(b64);
+    var data=JSON.parse(json);
+    if(!data.kids||!Array.isArray(data.kids)){alert("Code invalide ou corrompu.");return;}
+    kids=data.kids;
+    idx=0;
+    render();
+    saveData();
+    closeShareModal();
+    alert("✓ Fiche(s) importée(s) avec succès !");
+  }catch(e){
+    alert("Erreur : code invalide ou impossible à décoder.");
+  }
+}
+
+function exportAllData(){
+  try{
+    var json=JSON.stringify({kids:kids,exportDate:new Date().toISOString()},null,2);
+    var blob=new Blob([json],{type:"application/json"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url;
+    a.download="aidemoi-all-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){try{document.body.removeChild(a);}catch(_){}URL.revokeObjectURL(url);},1500);
+    alert("✓ Données exportées avec succès !");
+  }catch(e){alert("Erreur lors de l'export.");}
+}
+
+function importFromFile(){
+  var file=document.getElementById("import-file").files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data.kids||!Array.isArray(data.kids)){alert("Format de fichier invalide.");return;}
+      kids=data.kids;
+      idx=0;
+      render();
+      saveData();
+      alert("✓ Données importées avec succès !");
+      document.getElementById("import-file").value="";
+    }catch(err){
+      alert("Erreur : le fichier n'est pas un fichier Aide Moi valide.");
+    }
+  };
+  reader.readAsText(file);
+}
+
 function isLocalOnlyMode(){
   return localStorage.getItem('aideMoi_localOnly')==='1';
 }
@@ -1951,7 +2386,7 @@ if(docUpload){
     var catKey=catMap[cat]||"autre";
     files.forEach(function(file){
       if(/^image\//.test(file.type)){
-        // Images : compression automatique jusqu'à 2 Mo
+        // Images : compression automatique jusqu'à 50 Mo
         Compress.image(file).then(function(result){
           if(!kids[idx].docs)kids[idx].docs={ordo:[],proto:[],autre:[]};
           kids[idx].docs[catKey].push({
@@ -1965,9 +2400,9 @@ if(docUpload){
           alert((err.message||"Impossible de traiter l'image")+" : "+file.name);
         });
       } else {
-        // PDF et autres fichiers : limite 2 Mo
-        if(file.size>2*1024*1024){
-          alert("Fichier trop volumineux (max 2 Mo) : "+file.name);
+        // PDF et autres fichiers : limite 50 Mo
+        if(file.size>50*1024*1024){
+          alert("Fichier trop volumineux (max 50 Mo) : "+file.name);
           return;
         }
         var reader=new FileReader();
@@ -2308,17 +2743,123 @@ async function generateRecapPdf(orientation){
   </div>
 </div>
 
-<!-- Photo bottom sheet -->
-<div class="photo-sheet-overlay" id="photo-overlay" onclick="closePhotoSheet(event)">
-  <div class="photo-sheet">
-    <div class="ps-handle"></div>
-    <div class="ps-title">Photo de profil</div>
-    <button class="ps-btn" onclick="pickNewPhoto()"><span style="font-size:20px">📷</span> Choisir une photo</button>
-    <div class="ps-sep" id="photo-sheet-sep" style="display:none"></div>
-    <button class="ps-btn danger" id="photo-del-btn" style="display:none" onclick="deletePhoto()"><span style="font-size:20px">🗑️</span> Supprimer la photo</button>
-    <div class="ps-sep"></div>
-    <button class="ps-btn" onclick="dismissPhotoSheet()"><span style="font-size:20px">✕</span> Annuler</button>
+<!-- Photo crop modal overlay -->
+<div class="photo-crop-overlay" id="photo-crop-overlay">
+  <div class="photo-crop-card">
+    <div class="photo-crop-header">
+      <span>Centrer votre photo</span>
+      <button class="photo-crop-close" onclick="closePhotoCropModal()">✕</button>
+    </div>
+    <div class="photo-crop-preview">
+      <img id="photo-crop-img" class="photo-crop-image" src="" alt="">
+    </div>
+    <div class="photo-crop-controls">
+      <div style="font-size:12px;color:#534AB7;font-weight:600;">Zoom</div>
+      <input type="range" id="photo-crop-zoom" class="photo-crop-slider" min="100" max="300" value="100">
+      <div style="font-size:11px;color:#999;text-align:center;">Glissez l'image pour centrer</div>
+    </div>
+    <div class="photo-crop-buttons">
+      <button class="photo-crop-btn photo-crop-cancel" onclick="closePhotoCropModal()">✕ Annuler</button>
+      <button class="photo-crop-btn photo-crop-apply" onclick="applyPhotoCrop()">✓ Appliquer</button>
+    </div>
   </div>
 </div>
+
+<!-- Share import modal overlay -->
+<div class="share-modal-overlay" id="share-modal-overlay" onclick="closeShareModal(event)">
+  <div class="share-modal-card">
+    <div class="share-modal-title">Importer une fiche partagée</div>
+    <div class="share-modal-label">Collez le code de partage :</div>
+    <textarea class="share-modal-textarea" id="share-import-input" placeholder="Collez le code reçu ici..."></textarea>
+    <div class="share-modal-actions">
+      <button class="share-modal-btn share-modal-cancel" onclick="closeShareModal()">✕ Annuler</button>
+      <button class="share-modal-btn share-modal-save" onclick="importSharedCode()">✓ Importer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Urg Note modal overlay -->
+<div class="urg-note-modal-overlay" id="urg-note-modal-overlay" onclick="closeUrgNoteModal(event)">
+  <div class="urg-note-modal-card">
+    <div class="urg-note-modal-title">Modifier les consignes vitales</div>
+    <textarea class="urg-note-modal-textarea" id="urg-note-textarea" placeholder="Décrivez les consignes d'urgence et les comportements à adopter en cas de crise..."></textarea>
+    <div class="urg-note-modal-actions">
+      <button class="urg-note-modal-btn urg-note-modal-cancel" onclick="closeUrgNoteModal()">✕ Annuler</button>
+      <button class="urg-note-modal-btn urg-note-modal-save" onclick="saveUrgNoteFromModal()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Urg Contact modal overlay -->
+<div class="urg-contact-modal-overlay" id="urg-contact-modal-overlay" onclick="closeUrgContactModal(event)">
+  <div class="urg-contact-modal-card">
+    <div class="urg-contact-modal-title" id="urg-contact-modal-title">Ajouter un contact d'urgence</div>
+    
+    <div class="urg-contact-form-group">
+      <label class="urg-contact-form-label">Nom du contact</label>
+      <input class="urg-contact-form-input" id="urg-contact-nom" type="text" placeholder="ex: SAMU, Dr Martin">
+    </div>
+    
+    <div class="urg-contact-form-group">
+      <label class="urg-contact-form-label">Numéro de téléphone</label>
+      <input class="urg-contact-form-input" id="urg-contact-tel" type="tel" placeholder="ex: 06 12 34 56 78">
+    </div>
+    
+    <div class="urg-contact-form-group">
+      <label class="urg-contact-form-label">Type de contact</label>
+      <div class="urg-contact-type-select">
+        <button class="urg-contact-type-btn selected" data-type="samu" onclick="selectUrgContactType('samu')">🏥 SAMU</button>
+        <button class="urg-contact-type-btn" data-type="medecin" onclick="selectUrgContactType('medecin')">👩‍⚕️ Médecin</button>
+        <button class="urg-contact-type-btn" data-type="pharmacie" onclick="selectUrgContactType('pharmacie')">💊 Pharmacie</button>
+        <button class="urg-contact-type-btn" data-type="famille" onclick="selectUrgContactType('famille')">👨‍👩‍👧 Famille</button>
+        <button class="urg-contact-type-btn" data-type="autre" onclick="selectUrgContactType('autre')">📞 Autre</button>
+      </div>
+    </div>
+    
+    <div class="urg-contact-modal-actions">
+      <button class="urg-contact-modal-btn urg-contact-modal-cancel" onclick="closeUrgContactModal()">✕ Annuler</button>
+      <button class="urg-contact-modal-btn urg-contact-modal-save" onclick="saveUrgContactFromModal()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ordo modal overlay -->
+<div class="ordo-modal-overlay" id="ordo-modal-overlay" onclick="closeOrdoModal(event)">
+  <div class="ordo-modal-card">
+    <div class="ordo-modal-title" id="ordo-modal-title">Ajouter une ordonnance</div>
+    
+    <div class="ordo-form-group">
+      <label class="ordo-form-label">Titre de l'ordonnance</label>
+      <input class="ordo-form-input" id="ordo-titre" type="text" placeholder="ex: Traitement de fond">
+    </div>
+    
+    <div class="ordo-form-group">
+      <label class="ordo-form-label">Nom du médecin</label>
+      <input class="ordo-form-input" id="ordo-medecin" type="text" placeholder="ex: Dr Martin">
+    </div>
+    
+    <div class="ordo-form-group">
+      <label class="ordo-form-label">Date de prescription</label>
+      <input class="ordo-form-input" id="ordo-date" type="text" placeholder="ex: 10 avril 2026">
+    </div>
+    
+    <div class="ordo-form-group">
+      <label class="ordo-form-label">Date d'expiration</label>
+      <input class="ordo-form-input" id="ordo-expiration" type="text" placeholder="ex: 10 avril 2027">
+    </div>
+    
+    <div class="ordo-meds-section">
+      <div class="ordo-meds-label">Médicaments</div>
+      <div id="ordo-meds-list"></div>
+      <button class="ordo-add-med-btn" onclick="addMedLine()">+ Ajouter un médicament</button>
+    </div>
+    
+    <div class="ordo-modal-actions">
+      <button class="ordo-modal-btn ordo-modal-cancel" onclick="closeOrdoModal()">✕ Annuler</button>
+      <button class="ordo-modal-btn ordo-modal-save" onclick="saveOrdoFromModal()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
