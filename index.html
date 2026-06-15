@@ -1714,8 +1714,13 @@ function setupPhotoCropDrag(){
 
 function updatePhotoCropDisplay(){
   var img=document.getElementById("photo-crop-img");
-  var scale=photoCropState.zoom/100;
-  img.style.transform="scale("+scale+") translate("+photoCropState.offsetX+"px,"+photoCropState.offsetY+"px)";
+  var container=document.querySelector(".photo-crop-preview");
+  var s=photoCropState.zoom/100;
+  var maxOx=container.offsetWidth/2*(1-1/s);
+  var maxOy=container.offsetHeight/2*(1-1/s);
+  photoCropState.offsetX=Math.max(-maxOx,Math.min(maxOx,photoCropState.offsetX));
+  photoCropState.offsetY=Math.max(-maxOy,Math.min(maxOy,photoCropState.offsetY));
+  img.style.transform="scale("+s+") translate("+photoCropState.offsetX+"px,"+photoCropState.offsetY+"px)";
 }
 
 function applyPhotoCrop(){
