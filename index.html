@@ -71,6 +71,13 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .tl-time{position:absolute;left:-56px;width:34px;text-align:right;font-size:11px;font-weight:600;line-height:1.2;white-space:nowrap;}
 .tl-dot{position:absolute;left:-16px;width:10px;height:10px;border-radius:50%;background:white;box-shadow:0 0 0 2px rgba(255,255,255,.4);flex-shrink:0;transition:opacity .2s;}
 .tl-dot.done{opacity:.3;}
+.tl-now-row{position:relative;display:flex;align-items:center;padding:6px 0 6px 4px;margin:2px 0;}
+.tl-now-row::before{content:"";position:absolute;left:-56px;right:0;top:50%;height:2px;background:rgba(255,255,255,.7);border-radius:2px;}
+.tl-now-dot{position:absolute;left:-21px;width:12px;height:12px;border-radius:50%;background:white;box-shadow:0 0 0 3px rgba(255,255,255,.5);}
+.tl-now-label{font-size:11px;font-weight:700;color:white;opacity:.9;position:relative;}
+.tl-item-past .tlabel{opacity:.55;text-decoration:line-through;}
+.tl-item-past .tl-dot{background:rgba(255,255,255,.4);}
+.tl-item-past .tl-time{opacity:.45;}
 .dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0;background:white;}
 .rtitle{font-size:14px;font-weight:600;}
 .rmeta{font-size:12px;opacity:.8;margin-top:2px;}
@@ -1424,12 +1431,21 @@ function addRepas(){
 }
 
 function addTask(){
-  var label=prompt("Nom de la tâche :");if(!label)return;
-  var time=prompt("Heure (ex: 9h00) :")||"À définir";
-  kids[idx].tasks.push({done:false,label:label,time:time});
-  renderTasks();
-  saveData();
+  document.getElementById('task-modal-label').value='';
+  document.getElementById('task-modal-time').value='';
+  document.getElementById('task-add-modal').style.display='flex';
+  setTimeout(function(){document.getElementById('task-modal-label').focus();},150);
 }
+function saveTaskModal(){
+  var label=document.getElementById('task-modal-label').value.trim();
+  if(!label)return;
+  var tv=document.getElementById('task-modal-time').value;
+  var timeDisplay=tv?tv.replace(':','h'):'À définir';
+  kids[idx].tasks.push({done:false,label:label,time:timeDisplay});
+  renderTasks();saveData();
+  document.getElementById('task-add-modal').style.display='none';
+}
+function closeTaskModal(){document.getElementById('task-add-modal').style.display='none';}
 
 function addMed(){
   var nom=prompt("Nom du médicament :");if(!nom)return;
@@ -1549,17 +1565,28 @@ function renderTasks(){
   var k=kids[idx],el=document.getElementById("r-tasks");el.innerHTML="";
   if(!k.tasks.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucune tâche.</div>";return;}
   var sorted=k.tasks.map(function(t,i){return {t:t,i:i};}).sort(function(a,b){return parseTaskTime(a.t.time)-parseTaskTime(b.t.time);});
+  var now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
+  var nowLabel=String(now.getHours()).padStart(2,'0')+'h'+String(now.getMinutes()).padStart(2,'0');
+  var nowInserted=false;
   var wrap=document.createElement("div");wrap.className="timeline-wrap";
   sorted.forEach(function(item){
     var t=item.t,i=item.i;
-    var d=document.createElement("div");d.className="timeline-item";
+    var taskMin=parseTaskTime(t.time);
+    if(!nowInserted&&taskMin>=nowMin&&taskMin!==Infinity){
+      nowInserted=true;
+      var nowRow=document.createElement("div");nowRow.className="tl-now-row";
+      nowRow.innerHTML="<div class='tl-now-dot'></div><div class='tl-now-label'>"+nowLabel+"</div>";
+      wrap.appendChild(nowRow);
+    }
+    var isPast=!t.done&&taskMin<nowMin&&taskMin!==Infinity;
+    var d=document.createElement("div");d.className="timeline-item"+(isPast?" tl-item-past":"");
     d.innerHTML="<div class='tl-time'>"+t.time+"</div><div class='tl-dot"+(t.done?" done":"")+"'></div><div class='chk"+(t.done?" done":"")+"'></div><div class='tlabel"+(t.done?" done":"")+"' style='flex:1;'>"+t.label+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
     d.querySelector(".chk").onclick=function(){
       t.done=!t.done;
       this.classList.toggle("done");
       this.nextElementSibling.classList.toggle("done");
       d.querySelector(".tl-dot").classList.toggle("done");
-      saveData();
+      saveData();renderTasks();
     };
     d.querySelector("button").onclick=(function(i2){return function(){kids[idx].tasks.splice(i2,1);renderTasks();saveData();};})(i);
     wrap.appendChild(d);
@@ -3125,6 +3152,24 @@ async function generateRecapPdf(orientation){
     <div class="ordo-modal-actions">
       <button class="ordo-modal-btn ordo-modal-cancel" onclick="closeOrdoModal()">✕ Annuler</button>
       <button class="ordo-modal-btn ordo-modal-save" onclick="saveOrdoFromModal()">✓ Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task add modal -->
+<div id="task-add-modal" onclick="if(event.target===this)closeTaskModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8500;align-items:flex-end;justify-content:center;">
+  <div style="background:white;border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:440px;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom));">
+    <div style="font-size:15px;font-weight:600;color:#3C3489;margin-bottom:14px;">Nouvelle tâche</div>
+    <input id="task-modal-label" type="text" placeholder="Ex: Kinésithérapie, Repas du midi…"
+      style="width:100%;padding:10px 14px;border:1.5px solid #e0ddf8;border-radius:12px;font-size:14px;outline:none;font-family:system-ui;margin-bottom:10px;"
+      onkeydown="if(event.key==='Enter')document.getElementById('task-modal-time').focus();">
+    <div style="font-size:12px;font-weight:600;color:#534AB7;margin-bottom:6px;padding-left:2px;">Heure</div>
+    <input id="task-modal-time" type="time"
+      style="width:100%;padding:10px 14px;border:1.5px solid #e0ddf8;border-radius:12px;font-size:14px;outline:none;font-family:system-ui;margin-bottom:14px;"
+      onkeydown="if(event.key==='Enter')saveTaskModal();">
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeTaskModal()" style="flex:1;padding:10px;border-radius:12px;border:none;background:#f0eeff;color:#534AB7;font-size:14px;cursor:pointer;">Annuler</button>
+      <button onclick="saveTaskModal()" style="flex:1;padding:10px;border-radius:12px;border:none;background:#1D9E75;color:white;font-size:14px;font-weight:600;cursor:pointer;">Ajouter</button>
     </div>
   </div>
 </div>
