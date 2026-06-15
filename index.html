@@ -1557,40 +1557,54 @@ function addMedia(){
 }
 
 function parseTaskTime(s){
-  if(!s)return Infinity;
-  var m=s.match(/(\d+)[h:](\d*)/);
-  return m?parseInt(m[1])*60+(parseInt(m[2])||0):Infinity;
+  if(!s||typeof s!=='string')return Infinity;
+  var m=s.match(/(\d{1,2})[h:](\d{0,2})/i);
+  if(!m)return Infinity;
+  return (parseInt(m[1],10)||0)*60+(parseInt(m[2],10)||0);
+}
+function _makeTaskRow(t,i,isPast){
+  var d=document.createElement("div");d.className="timeline-item"+(isPast?" tl-item-past":"");
+  d.innerHTML="<div class='tl-time'>"+t.time+"</div><div class='tl-dot"+(t.done?" done":"")+"'></div><div class='chk"+(t.done?" done":"")+"'></div><div class='tlabel"+(t.done?" done":"")+"' style='flex:1;'>"+t.label+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
+  d.querySelector(".chk").onclick=function(){t.done=!t.done;saveData();renderTasks();};
+  d.querySelector("button").onclick=(function(i2){return function(){kids[idx].tasks.splice(i2,1);renderTasks();saveData();};})(i);
+  return d;
 }
 function renderTasks(){
   var k=kids[idx],el=document.getElementById("r-tasks");el.innerHTML="";
   if(!k.tasks.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;opacity:.7;'>Aucune tâche.</div>";return;}
-  var sorted=k.tasks.map(function(t,i){return {t:t,i:i};}).sort(function(a,b){return parseTaskTime(a.t.time)-parseTaskTime(b.t.time);});
+  var timed=[],untimed=[];
+  k.tasks.forEach(function(t,i){
+    var min=parseTaskTime(t.time);
+    if(min===Infinity)untimed.push({t:t,i:i});
+    else timed.push({t:t,i:i,min:min});
+  });
+  timed.sort(function(a,b){return a.min-b.min;});
   var now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
   var nowLabel=String(now.getHours()).padStart(2,'0')+'h'+String(now.getMinutes()).padStart(2,'0');
-  var nowInserted=false;
   var wrap=document.createElement("div");wrap.className="timeline-wrap";
-  sorted.forEach(function(item){
-    var t=item.t,i=item.i;
-    var taskMin=parseTaskTime(t.time);
-    if(!nowInserted&&taskMin>=nowMin&&taskMin!==Infinity){
+  var nowInserted=false;
+  timed.forEach(function(item){
+    var t=item.t,i=item.i,taskMin=item.min;
+    if(!nowInserted&&taskMin>=nowMin){
       nowInserted=true;
-      var nowRow=document.createElement("div");nowRow.className="tl-now-row";
-      nowRow.innerHTML="<div class='tl-now-dot'></div><div class='tl-now-label'>"+nowLabel+"</div>";
-      wrap.appendChild(nowRow);
+      var nr=document.createElement("div");nr.className="tl-now-row";
+      nr.innerHTML="<div class='tl-now-dot'></div><div class='tl-now-label'>"+nowLabel+"</div>";
+      wrap.appendChild(nr);
     }
-    var isPast=!t.done&&taskMin<nowMin&&taskMin!==Infinity;
-    var d=document.createElement("div");d.className="timeline-item"+(isPast?" tl-item-past":"");
-    d.innerHTML="<div class='tl-time'>"+t.time+"</div><div class='tl-dot"+(t.done?" done":"")+"'></div><div class='chk"+(t.done?" done":"")+"'></div><div class='tlabel"+(t.done?" done":"")+"' style='flex:1;'>"+t.label+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector(".chk").onclick=function(){
-      t.done=!t.done;
-      this.classList.toggle("done");
-      this.nextElementSibling.classList.toggle("done");
-      d.querySelector(".tl-dot").classList.toggle("done");
-      saveData();renderTasks();
-    };
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].tasks.splice(i2,1);renderTasks();saveData();};})(i);
-    wrap.appendChild(d);
+    wrap.appendChild(_makeTaskRow(t,i,!t.done&&taskMin<nowMin));
   });
+  if(!nowInserted){
+    var nr2=document.createElement("div");nr2.className="tl-now-row";
+    nr2.innerHTML="<div class='tl-now-dot'></div><div class='tl-now-label'>"+nowLabel+"</div>";
+    wrap.appendChild(nr2);
+  }
+  if(untimed.length){
+    var sep=document.createElement("div");
+    sep.style="font-size:11px;font-weight:600;opacity:.6;padding:10px 0 4px;text-transform:uppercase;letter-spacing:.05em;";
+    sep.textContent="Sans horaire";
+    wrap.appendChild(sep);
+    untimed.forEach(function(item){wrap.appendChild(_makeTaskRow(item.t,item.i,false));});
+  }
   el.appendChild(wrap);
 }
 
