@@ -384,6 +384,22 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .user-menu-header{padding:12px 16px;border-bottom:1px solid #f0f0f0;margin-bottom:4px;}
 .user-menu-name{font-size:14px;font-weight:600;color:#3C3489;}
 .user-menu-role{font-size:11px;color:#534AB7;margin-top:2px;}
+/* ── Chat ── */
+.chat-messages{min-height:260px;max-height:calc(100dvh - 400px);overflow-y:auto;padding:4px 0 8px;}
+.chat-empty{text-align:center;padding:2.5rem 1rem;font-size:13px;opacity:.55;line-height:1.6;}
+.chat-date-sep{text-align:center;font-size:11px;color:#999;margin:12px 0 6px;font-weight:500;}
+.chat-msg{display:flex;flex-direction:column;margin-bottom:10px;max-width:78%;}
+.chat-msg-me{align-items:flex-end;margin-left:auto;}
+.chat-msg-other{align-items:flex-start;}
+.chat-msg-name{font-size:11px;font-weight:600;color:#534AB7;margin-bottom:3px;padding-left:4px;}
+.chat-bubble{padding:8px 12px;border-radius:16px;font-size:13px;line-height:1.45;word-break:break-word;white-space:pre-wrap;}
+.chat-msg-me .chat-bubble{background:#0C447C;color:white;border-bottom-right-radius:4px;}
+.chat-msg-other .chat-bubble{background:#E6F1FB;color:#0C447C;border-bottom-left-radius:4px;}
+.chat-time{font-size:10px;opacity:.45;margin-top:3px;padding:0 4px;}
+.chat-input-bar{display:flex;gap:8px;align-items:flex-end;background:white;border-radius:16px;padding:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,.08);margin-top:6px;}
+.chat-input{flex:1;border:none;background:transparent;font-size:14px;font-family:system-ui,sans-serif;color:#1f1f25;resize:none;max-height:120px;outline:none;line-height:1.45;}
+.chat-input::placeholder{color:#aaa;}
+.chat-send-btn{background:#0C447C;color:white;border:none;border-radius:50%;width:36px;height:36px;font-size:15px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 <body>
@@ -669,15 +685,26 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
     </div>
   </div>
 
-  <!-- ── Onglet Chat (Phase 4) ── -->
+  <!-- ── Onglet Chat ── -->
   <div class="tab" id="tab-chat">
-    <div class="card" style="background:#E6F1FB;color:#0C447C;text-align:center;padding:2rem 1.5rem;">
-      <div style="font-size:40px;margin-bottom:12px;">💬</div>
-      <div style="font-weight:600;font-size:16px;margin-bottom:8px;">Messagerie</div>
-      <div style="font-size:13px;opacity:.75;line-height:1.5;">
-        Communiquez en temps réel avec toute l'équipe autour de cet enfant.<br>
-        Partagez des photos, vidéos et cartes de fiche directement dans la conversation.<br><br>
-        Disponible après connexion à votre compte cloud.
+    <div id="chat-no-cloud" class="card" style="display:none;background:#E6F1FB;color:#0C447C;text-align:center;padding:2rem 1.5rem;">
+      <div style="font-size:36px;margin-bottom:10px;">☁️</div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:8px;">Connexion requise</div>
+      <div style="font-size:13px;opacity:.8;line-height:1.5;">Le chat nécessite un compte connecté.<br>Connectez-vous depuis les Réglages.</div>
+    </div>
+    <div id="chat-no-child" class="card" style="display:none;background:#E6F1FB;color:#0C447C;text-align:center;padding:2rem 1.5rem;">
+      <div style="font-size:36px;margin-bottom:10px;">💬</div>
+      <div style="font-weight:600;font-size:15px;margin-bottom:8px;">Profil non synchronisé</div>
+      <div style="font-size:13px;opacity:.8;line-height:1.5;">Ce profil n'est pas encore enregistré dans le cloud.<br>Sauvegardez-le d'abord pour activer le chat.</div>
+    </div>
+    <div id="chat-wrap" style="display:none;">
+      <div class="stitle" id="chat-child-name">Chat</div>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input-bar">
+        <textarea id="chat-input" class="chat-input" placeholder="Message…" rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();Chat.sendMessage();}"></textarea>
+        <button class="chat-send-btn" onclick="Chat.sendMessage()">➤</button>
       </div>
     </div>
   </div>
@@ -734,6 +761,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 <script src="./js/auth.js"></script>
 <script src="./js/sync.js"></script>
 <script src="./js/compress.js"></script>
+<script src="./js/chat.js"></script>
 
 <script>
 var kids=[
@@ -897,6 +925,7 @@ function showTab(name){
   document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("visible");});
   var target=document.getElementById("tab-"+name);
   if(target)target.classList.add("visible");
+  if(name==='chat'){Chat.clearBadge();var k=kids[idx];Chat.open(k?k._id:null);}
 }
 
 function renderBar(){
