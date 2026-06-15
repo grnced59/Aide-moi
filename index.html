@@ -164,33 +164,42 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .hydro-btn{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:rgba(255,255,255,.2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:inherit;font-weight:600;}
 .hydro-total-bar{margin-top:10px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.25);font-size:13px;font-weight:600;text-align:center;}
 
-.urgence-banner{background:#E24B4A;border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
-.urgence-banner-icon{font-size:28px;flex-shrink:0;}
-.urgence-banner-title{font-size:16px;font-weight:700;color:white;}
-.urgence-banner-sub{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px;}
-.ordo-card{border-radius:16px;padding:1rem 1.25rem;margin-bottom:10px;background:#FCEBEB;border:2px solid #F09595;}
+.urgence-banner{background:linear-gradient(135deg,#B71C1C 0%,#E24B4A 55%,#EF7E7D 100%);border-radius:20px;padding:1.25rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:14px;box-shadow:0 6px 24px rgba(183,28,28,.3);}
+.urgence-banner-icon{font-size:34px;flex-shrink:0;animation:urg-pulse 2s ease-in-out infinite;}
+@keyframes urg-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.14);}}
+.urgence-banner-title{font-size:17px;font-weight:800;color:white;letter-spacing:.01em;}
+.urgence-banner-sub{font-size:11px;color:rgba(255,255,255,.8);margin-top:3px;line-height:1.4;}
+.urgence-banner-dot{width:10px;height:10px;border-radius:50%;background:#69F0AE;margin-left:auto;flex-shrink:0;box-shadow:0 0 8px #69F0AE;animation:urg-blink 1.6s ease-in-out infinite;}
+@keyframes urg-blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+.urg-section-title{font-size:12px;font-weight:700;color:#791F1F;text-transform:uppercase;letter-spacing:.07em;margin:1rem 0 .6rem;padding-left:10px;border-left:3px solid #E24B4A;}
+.urg-contacts-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:.75rem;}
+.urg-card{background:#fff;border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 14px rgba(0,0,0,.07);border:1.5px solid #F5D0D0;}
+.urg-card-av{width:50px;height:50px;border-radius:14px;background:#FCEBEB;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:2px solid #F09595;}
+.urg-card-info{flex:1;min-width:0;}
+.urg-card-name{font-size:15px;font-weight:700;color:#1a1a2e;}
+.urg-card-tel{font-size:14px;color:#E24B4A;font-weight:700;margin-top:3px;letter-spacing:.02em;}
+.urg-card-actions{display:flex;gap:7px;flex-shrink:0;align-items:center;}
+.urg-call-btn{display:flex;align-items:center;gap:5px;background:#E24B4A;color:white;padding:10px 15px;border-radius:50px;font-size:13px;font-weight:700;text-decoration:none;border:none;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(226,75,74,.4);}
+.urg-call-btn:active{transform:scale(.95);opacity:.9;}
+.urg-edit-btn{background:#F7EBF0;color:#791F1F;padding:9px 11px;border-radius:50px;font-size:13px;font-weight:600;border:1.5px solid #F09595;cursor:pointer;}
+.urg-del-btn{background:none;border:none;color:#B71C1C;opacity:.45;cursor:pointer;font-size:17px;padding:4px;}
+.ordo-card{border-radius:18px;padding:1rem 1.25rem;margin-bottom:10px;background:#fff;border:1.5px solid #F09595;box-shadow:0 2px 10px rgba(0,0,0,.06);}
 .ordo-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.ordo-icon{width:40px;height:40px;border-radius:12px;background:#F09595;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.ordo-title{font-size:15px;font-weight:700;color:#791F1F;}
+.ordo-icon{width:42px;height:42px;border-radius:13px;background:#FCEBEB;border:2px solid #F09595;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ordo-title{font-size:15px;font-weight:700;color:#1a1a2e;}
 .ordo-date{font-size:11px;color:#A32D2D;margin-top:2px;}
 .ordo-badge{margin-left:auto;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:700;}
 .ordo-badge-valid{background:#E1F5EE;color:#085041;}
 .ordo-badge-exp{background:#FCEBEB;color:#791F1F;border:1px solid #F09595;}
 .ordo-body{font-size:13px;color:#501313;line-height:1.6;}
 .ordo-med-list{margin-top:8px;display:flex;flex-direction:column;gap:4px;}
-.ordo-med{display:flex;align-items:center;gap:8px;font-size:13px;color:#791F1F;background:#F7C1C1;border-radius:8px;padding:6px 10px;}
+.ordo-med{display:flex;align-items:center;gap:8px;font-size:13px;color:#791F1F;background:#FCEBEB;border-radius:8px;padding:6px 10px;}
 .ordo-med-dot{width:8px;height:8px;border-radius:50%;background:#E24B4A;flex-shrink:0;}
 .ordo-actions{display:flex;gap:8px;margin-top:10px;}
 .ordo-action-btn{flex:1;padding:8px;border-radius:10px;border:none;font-size:12px;cursor:pointer;font-weight:600;}
-.urgence-contacts{border-radius:16px;padding:1rem 1.25rem;margin-bottom:1rem;background:#FFF;}
-.urg-ct{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1.5px solid #F7C1C1;}
-.urg-ct:last-child{border-bottom:none;padding-bottom:0;}
-.urg-ct-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
-.urg-ct-name{font-size:14px;font-weight:700;color:#791F1F;}
-.urg-ct-tel{font-size:13px;color:#E24B4A;font-weight:600;margin-top:2px;}
-.urg-note{border-radius:16px;padding:1rem 1.25rem;background:#FFF;border:2px solid #F09595;margin-bottom:1rem;}
-.urg-note-title{font-size:13px;font-weight:700;color:#791F1F;margin-bottom:6px;}
-.urg-note-text{font-size:13px;color:#501313;line-height:1.6;}
+.urg-note{border-radius:18px;padding:1rem 1.25rem;background:#fff;border:1.5px solid #F09595;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.urg-note-title{font-size:12px;font-weight:700;color:#791F1F;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.urg-note-text{font-size:13px;color:#3a1010;line-height:1.7;}
 
 .lock-btn{width:100%;padding:12px;border-radius:16px;border:none;background:#534AB7;color:white;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .lock-btn:active{opacity:.85;}
@@ -221,8 +230,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
 .doc-viewer-title{font-size:15px;font-weight:700;color:white;flex:1;}
 .doc-close-btn{padding:6px 14px;border-radius:20px;border:none;background:#534AB7;color:white;font-size:13px;cursor:pointer;font-weight:600;}
 .doc-viewer-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.doc-viewer-body.pdf-mode{padding:0;align-items:stretch;overflow:hidden;}
 .doc-viewer-body img{max-width:100%;max-height:100%;border-radius:8px;}
-.doc-viewer-body iframe{width:100%;height:100%;border:none;border-radius:8px;background:white;}
+.doc-viewer-body iframe{width:100%;height:100%;border:none;background:white;}
 .upload-zone{border:2px dashed rgba(226,75,74,.4);border-radius:14px;padding:1.5rem;text-align:center;cursor:pointer;background:#FCEBEB;margin-bottom:10px;}
 .upload-zone:hover{background:#F7C1C1;}
 .upload-zone-icon{font-size:32px;margin-bottom:8px;}
@@ -541,25 +551,26 @@ body{font-family:system-ui,sans-serif;background:var(--bg-app);color:var(--text-
   <div class="tab" id="tab-urgence">
     <div class="urgence-banner">
       <div class="urgence-banner-icon">🚨</div>
-      <div>
-        <div class="urgence-banner-title">Mode urgence</div>
+      <div style="flex:1;">
+        <div class="urgence-banner-title">Mode Urgence</div>
         <div class="urgence-banner-sub">Contacts, ordonnances et consignes critiques accessibles rapidement</div>
       </div>
+      <div class="urgence-banner-dot"></div>
     </div>
 
-    <div class="stitle">Contacts d'urgence</div>
-    <div class="urgence-contacts" id="r-urg-contacts"></div>
+    <div class="urg-section-title">Contacts d'urgence</div>
+    <div class="urg-contacts-grid" id="r-urg-contacts"></div>
     <button class="add-btn" style="border-color:#F09595;background:#FCEBEB;color:#791F1F;" onclick="addUrgContact()">+ Ajouter un contact d'urgence</button>
 
-    <div class="stitle" style="margin-top:1rem;">Ordonnances</div>
+    <div class="urg-section-title">Ordonnances</div>
     <div id="r-ordos"></div>
     <button class="add-btn" style="border-color:#F09595;background:#FCEBEB;color:#791F1F;" onclick="addOrdo()">+ Ajouter une ordonnance</button>
 
-    <div class="stitle" style="margin-top:1rem;">Consignes vitales</div>
+    <div class="urg-section-title">Consignes vitales</div>
     <div class="urg-note" id="r-urg-note"></div>
     <button class="add-btn" style="border-color:#F09595;background:#FCEBEB;color:#791F1F;" onclick="editUrgNote()">Modifier les consignes</button>
 
-    <div class="stitle" style="margin-top:1rem;">Documents médicaux</div>
+    <div class="urg-section-title">Documents médicaux</div>
     <label class="upload-zone" for="doc-upload">
       <div class="upload-zone-icon">📎</div>
       <div class="upload-zone-text">Ajouter un document</div>
@@ -1013,16 +1024,26 @@ function renderRepas(){
 function renderUrgContacts(){
   var k=kids[idx],el=document.getElementById("r-urg-contacts");
   if(!el)return;
-  if(!k.urgContacts||!k.urgContacts.length){el.innerHTML="<div style='font-size:13px;padding:4px 0;color:#A32D2D;opacity:.7;'>Aucun contact d'urgence.</div>";return;}
+  if(!k.urgContacts||!k.urgContacts.length){
+    el.innerHTML="<div style='font-size:13px;padding:8px 0;color:#A32D2D;opacity:.7;'>Aucun contact d'urgence.</div>";
+    return;
+  }
   el.innerHTML="";
   k.urgContacts.forEach(function(c,i){
     var safeTel=formatTelHref(c.tel);
-    var d=document.createElement("div");d.className="urg-ct";
-    d.innerHTML="<div class='urg-ct-av' style='background:#F7C1C1;'>"+c.icone+"</div><div style='flex:1'><div class='urg-ct-name'>"+c.nom+"</div><div class='urg-ct-tel'>"+c.tel+"</div></div>"
-      +"<button style='background:#B5D4F4;color:#0C447C;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700;border:none;cursor:pointer;margin-right:4px;' onclick='editUrgContactModal("+i+")'>✏️ Modifier</button>"
-      +"<a href='tel:"+safeTel+"' style='text-decoration:none;background:#E24B4A;color:white;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;' aria-label='Appeler "+c.nom+"'>Appeler</a>"
-      +"<button style='background:none;border:none;color:#791F1F;opacity:.6;cursor:pointer;font-size:16px;padding:0 6px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button:last-child").onclick=(function(i2){return function(){if(confirm("Supprimer ce contact d'urgence ?")){kids[idx].urgContacts.splice(i2,1);renderUrgContacts();saveData();}};})(i);
+    var d=document.createElement("div");d.className="urg-card";
+    d.innerHTML=
+      "<div class='urg-card-av'>"+c.icone+"</div>"+
+      "<div class='urg-card-info'>"+
+        "<div class='urg-card-name'>"+c.nom+"</div>"+
+        "<div class='urg-card-tel'>"+c.tel+"</div>"+
+      "</div>"+
+      "<div class='urg-card-actions'>"+
+        "<button class='urg-edit-btn' onclick='editUrgContactModal("+i+")'>✏️</button>"+
+        "<a href='tel:"+safeTel+"' class='urg-call-btn' aria-label='Appeler "+c.nom+"'>📞 Appeler</a>"+
+        "<button class='urg-del-btn'>✕</button>"+
+      "</div>";
+    d.querySelector(".urg-del-btn").onclick=(function(i2){return function(){if(confirm("Supprimer ce contact d'urgence ?")){kids[idx].urgContacts.splice(i2,1);renderUrgContacts();saveData();}};})(i);
     el.appendChild(d);
   });
 }
@@ -1590,7 +1611,10 @@ var photoCropState={
   offsetX:0,
   offsetY:0,
   isDragging:false,
-  dragStart:{x:0,y:0}
+  dragStart:{x:0,y:0},
+  pinchStartDist:0,
+  pinchStartZoom:100,
+  listenersAdded:false
 };
 
 function openPhotoCropModal(photoData){
@@ -1610,37 +1634,70 @@ function closePhotoCropModal(){
 }
 
 function setupPhotoCropDrag(){
+  if(photoCropState.listenersAdded)return;
+  photoCropState.listenersAdded=true;
   var img=document.getElementById("photo-crop-img");
-  var container=document.querySelector(".photo-crop-preview");
   var zoomSlider=document.getElementById("photo-crop-zoom");
-  
-  zoomSlider.addEventListener("input",function(){
+
+  zoomSlider.oninput=function(){
     photoCropState.zoom=parseInt(this.value);
     updatePhotoCropDisplay();
-  });
-  
+  };
+
+  // ── Mouse (desktop) ───────────────────────────────────────────────
   img.addEventListener("mousedown",function(e){
+    e.preventDefault();
     photoCropState.isDragging=true;
     photoCropState.dragStart={x:e.clientX,y:e.clientY};
     img.classList.add("dragging");
   });
-  
   document.addEventListener("mousemove",function(e){
     if(!photoCropState.isDragging)return;
-    var dx=e.clientX-photoCropState.dragStart.x;
-    var dy=e.clientY-photoCropState.dragStart.y;
-    photoCropState.offsetX+=dx;
-    photoCropState.offsetY+=dy;
+    var s=photoCropState.zoom/100;
+    photoCropState.offsetX+=(e.clientX-photoCropState.dragStart.x)/s;
+    photoCropState.offsetY+=(e.clientY-photoCropState.dragStart.y)/s;
     photoCropState.dragStart={x:e.clientX,y:e.clientY};
     updatePhotoCropDisplay();
   });
-  
   document.addEventListener("mouseup",function(){
-    if(photoCropState.isDragging){
-      photoCropState.isDragging=false;
-      img.classList.remove("dragging");
-    }
+    if(photoCropState.isDragging){photoCropState.isDragging=false;img.classList.remove("dragging");}
   });
+
+  // ── Touch (mobile / Capacitor) ────────────────────────────────────
+  img.addEventListener("touchstart",function(e){
+    e.preventDefault();
+    if(e.touches.length===1){
+      photoCropState.isDragging=true;
+      photoCropState.dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    } else if(e.touches.length===2){
+      photoCropState.isDragging=false;
+      var dx=e.touches[0].clientX-e.touches[1].clientX;
+      var dy=e.touches[0].clientY-e.touches[1].clientY;
+      photoCropState.pinchStartDist=Math.sqrt(dx*dx+dy*dy);
+      photoCropState.pinchStartZoom=photoCropState.zoom;
+    }
+  },{passive:false});
+  img.addEventListener("touchmove",function(e){
+    e.preventDefault();
+    if(e.touches.length===1&&photoCropState.isDragging){
+      var s=photoCropState.zoom/100;
+      photoCropState.offsetX+=(e.touches[0].clientX-photoCropState.dragStart.x)/s;
+      photoCropState.offsetY+=(e.touches[0].clientY-photoCropState.dragStart.y)/s;
+      photoCropState.dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      updatePhotoCropDisplay();
+    } else if(e.touches.length===2&&photoCropState.pinchStartDist){
+      var dx=e.touches[0].clientX-e.touches[1].clientX;
+      var dy=e.touches[0].clientY-e.touches[1].clientY;
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      var newZoom=Math.round(Math.max(100,Math.min(300,photoCropState.pinchStartZoom*(dist/photoCropState.pinchStartDist))));
+      photoCropState.zoom=newZoom;
+      zoomSlider.value=newZoom;
+      updatePhotoCropDisplay();
+    }
+  },{passive:false});
+  img.addEventListener("touchend",function(e){
+    if(e.touches.length===0)photoCropState.isDragging=false;
+  },{passive:true});
 }
 
 function updatePhotoCropDisplay(){
@@ -1651,21 +1708,36 @@ function updatePhotoCropDisplay(){
 
 function applyPhotoCrop(){
   try{
+    var outputSize=200;
     var canvas=document.createElement("canvas");
-    canvas.width=200;canvas.height=200;
+    canvas.width=outputSize;canvas.height=outputSize;
     var ctx=canvas.getContext("2d");
+    var preview=document.querySelector(".photo-crop-preview");
+    var previewRect=preview.getBoundingClientRect();
+    var previewW=previewRect.width||preview.offsetWidth||400;
+    var previewH=previewRect.height||preview.offsetHeight||280;
     var img=new Image();
     img.onload=function(){
-      var scale=photoCropState.zoom/100;
-      var x=(canvas.width/2)-(img.width*scale/2)-photoCropState.offsetX;
-      var y=(canvas.height/2)-(img.height*scale/2)-photoCropState.offsetY;
-      ctx.drawImage(img,x,y,img.width*scale,img.height*scale);
+      var userScale=photoCropState.zoom/100;
+      // Scale needed to cover the preview with the image (object-fit:cover)
+      var coverScale=Math.max(previewW/img.naturalWidth,previewH/img.naturalHeight);
+      // Total scale from natural image pixels → displayed pixels
+      var totalScale=coverScale*userScale;
+      // Top-left of the displayed image in preview coordinates
+      var dispX=(previewW-img.naturalWidth*totalScale)/2+photoCropState.offsetX*userScale;
+      var dispY=(previewH-img.naturalHeight*totalScale)/2+photoCropState.offsetY*userScale;
+      // Crop window = center outputSize×outputSize of the preview
+      var cropStartX=(previewW-outputSize)/2;
+      var cropStartY=(previewH-outputSize)/2;
+      // Corresponding source rect in natural image pixels
+      var srcX=(cropStartX-dispX)/totalScale;
+      var srcY=(cropStartY-dispY)/totalScale;
+      var srcW=outputSize/totalScale;
+      var srcH=outputSize/totalScale;
+      ctx.drawImage(img,srcX,srcY,srcW,srcH,0,0,outputSize,outputSize);
       var dataUrl=canvas.toDataURL("image/jpeg",.9);
       kids[idx].photo=dataUrl;
-      saveData();
-      render();
-      closePhotoCropModal();
-      alert("✓ Photo centrée et appliquée !");
+      saveData();render();closePhotoCropModal();
     };
     img.src=photoCropState.originalData;
   }catch(e){
@@ -2016,9 +2088,61 @@ function render(){
 }
 
 var DATA_VERSION="hugo_v1";
-var MAX_STORAGE_CHARS=1500000;
+var MAX_STORAGE_CHARS=3000000;
 var MAX_DOC_DATA_CHARS=250000;
 var MAX_UPLOAD_BYTES=1200000;
+
+// ── DocStore : stockage des fichiers dans IndexedDB ───────────────
+var DocStore=(function(){
+  var DB_NAME="AideMoiDocs";
+  var DB_VERSION=1;
+  var STORE="docs";
+  var _db=null;
+  function _open(){
+    return new Promise(function(resolve,reject){
+      if(_db){resolve(_db);return;}
+      var req=indexedDB.open(DB_NAME,DB_VERSION);
+      req.onupgradeneeded=function(e){
+        var d=e.target.result;
+        if(!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE,{keyPath:"id"});
+      };
+      req.onsuccess=function(e){_db=e.target.result;resolve(_db);};
+      req.onerror=function(e){reject(e.target.error);};
+    });
+  }
+  function put(id,data){
+    return _open().then(function(d){
+      return new Promise(function(resolve,reject){
+        var tx=d.transaction(STORE,"readwrite");
+        tx.objectStore(STORE).put({id:id,data:data});
+        tx.oncomplete=function(){resolve();};
+        tx.onerror=function(e){reject(e.target.error);};
+      });
+    });
+  }
+  function get(id){
+    return _open().then(function(d){
+      return new Promise(function(resolve,reject){
+        var req=d.transaction(STORE,"readonly").objectStore(STORE).get(id);
+        req.onsuccess=function(e){resolve(e.target.result?e.target.result.data:null);};
+        req.onerror=function(e){reject(e.target.error);};
+      });
+    });
+  }
+  function remove(id){
+    if(!id)return Promise.resolve();
+    return _open().then(function(d){
+      return new Promise(function(resolve,reject){
+        var tx=d.transaction(STORE,"readwrite");
+        tx.objectStore(STORE).delete(id);
+        tx.oncomplete=function(){resolve();};
+        tx.onerror=function(e){reject(e.target.error);};
+      });
+    });
+  }
+  function genId(){return "doc_"+Date.now()+"_"+Math.random().toString(36).substr(2,8);}
+  return {put:put,get:get,remove:remove,genId:genId};
+})();
 
 function trimHeavyDocPayload(list){
   var removed=0;
@@ -2029,17 +2153,10 @@ function trimHeavyDocPayload(list){
       var arr=k.docs[cat];
       if(!Array.isArray(arr))return;
       k.docs[cat]=arr.map(function(doc){
+        if(doc&&doc.docId) return doc;
         if(doc&&doc.data&&String(doc.data).length>MAX_DOC_DATA_CHARS){
           removed++;
-          return {
-            name:doc.name,
-            type:doc.type,
-            size:doc.size,
-            date:doc.date,
-            cat:doc.cat,
-            data:"",
-            truncated:true
-          };
+          return {name:doc.name,type:doc.type,size:doc.size,date:doc.date,cat:doc.cat,data:"",truncated:true};
         }
         return doc;
       });
@@ -2386,21 +2503,22 @@ if(docUpload){
     var catKey=catMap[cat]||"autre";
     files.forEach(function(file){
       if(/^image\//.test(file.type)){
-        // Images : compression automatique jusqu'à 50 Mo
         Compress.image(file).then(function(result){
           if(!kids[idx].docs)kids[idx].docs={ordo:[],proto:[],autre:[]};
-          kids[idx].docs[catKey].push({
-            name:file.name,type:file.type,
-            size:result.sizeKb+"kb",
-            date:new Date().toLocaleDateString("fr-FR"),
-            data:result.dataUrl,cat:catKey
+          var docId=DocStore.genId();
+          return DocStore.put(docId,result.dataUrl).then(function(){
+            kids[idx].docs[catKey].push({
+              name:file.name,type:file.type,
+              size:result.sizeKb+"kb",
+              date:new Date().toLocaleDateString("fr-FR"),
+              docId:docId,cat:catKey
+            });
+            saveData();renderDocs();
           });
-          saveData();renderDocs();
         }).catch(function(err){
           alert((err.message||"Impossible de traiter l'image")+" : "+file.name);
         });
       } else {
-        // PDF et autres fichiers : limite 50 Mo
         if(file.size>50*1024*1024){
           alert("Fichier trop volumineux (max 50 Mo) : "+file.name);
           return;
@@ -2408,13 +2526,18 @@ if(docUpload){
         var reader=new FileReader();
         reader.onload=function(ev){
           if(!kids[idx].docs)kids[idx].docs={ordo:[],proto:[],autre:[]};
-          kids[idx].docs[catKey].push({
-            name:file.name,type:file.type,
-            size:Math.round(file.size/1024)+"kb",
-            date:new Date().toLocaleDateString("fr-FR"),
-            data:ev.target.result,cat:catKey
+          var docId=DocStore.genId();
+          DocStore.put(docId,ev.target.result).then(function(){
+            kids[idx].docs[catKey].push({
+              name:file.name,type:file.type,
+              size:Math.round(file.size/1024)+"kb",
+              date:new Date().toLocaleDateString("fr-FR"),
+              docId:docId,cat:catKey
+            });
+            saveData();renderDocs();
+          }).catch(function(err){
+            alert("Impossible de sauvegarder le document : "+(err.message||err));
           });
-          saveData();renderDocs();
         };
         reader.readAsDataURL(file);
       }
@@ -2440,12 +2563,13 @@ function renderDocList(containerId,arr,catKey){
       +"<button class='doc-btn doc-del'>✕</button>"
       +"</div>";
     d.querySelector(".doc-view").onclick=(function(d2){return function(){openDocViewer(d2);};})(doc);
-    d.querySelector(".doc-del").onclick=(function(i2,ck){return function(){
+    d.querySelector(".doc-del").onclick=(function(i2,ck,dId){return function(){
       if(confirm("Supprimer ce document ?")){
         kids[idx].docs[ck].splice(i2,1);
+        if(dId) DocStore.remove(dId);
         saveData();renderDocs();
       }
-    };})(i,catKey);
+    };})(i,catKey,doc.docId);
     el.appendChild(d);
   });
 }
@@ -2459,31 +2583,45 @@ function renderDocs(){
   renderDocList("r-docs-autre",d.autre,"autre");
 }
 
-function openDocViewer(doc){
-  if(!doc||!doc.data){
-    alert("Ce document est trop volumineux ou allégé localement. Reimportez-le pour l'afficher.");
-    return;
-  }
-  document.getElementById("doc-viewer-title").textContent=doc.name;
+function _showDocInViewer(name,type,data){
+  document.getElementById("doc-viewer-title").textContent=name;
   var body=document.getElementById("doc-viewer-body");
   body.innerHTML="";
-  if(doc.type==="application/pdf"){
+  if(type==="application/pdf"){
+    body.classList.add("pdf-mode");
     var iframe=document.createElement("iframe");
-    iframe.src=doc.data;
-    iframe.style="width:100%;height:80vh;border:none;border-radius:8px;background:white;";
+    iframe.src=data;
+    iframe.style.cssText="width:100%;height:100%;border:none;flex:1;display:block;";
     body.appendChild(iframe);
   } else {
+    body.classList.remove("pdf-mode");
     var img=document.createElement("img");
-    img.src=doc.data;
+    img.src=data;
     img.style="max-width:100%;max-height:80vh;border-radius:8px;";
     body.appendChild(img);
   }
   document.getElementById("doc-viewer").classList.add("active");
 }
 
+function openDocViewer(doc){
+  if(!doc){alert("Document non disponible.");return;}
+  if(doc.docId){
+    DocStore.get(doc.docId).then(function(data){
+      if(!data){alert("Ce document n'est plus disponible localement. Reimportez-le.");return;}
+      _showDocInViewer(doc.name,doc.type,data);
+    }).catch(function(){alert("Impossible d'ouvrir le document.");});
+  } else if(doc.data){
+    _showDocInViewer(doc.name,doc.type,doc.data);
+  } else {
+    alert("Ce document est trop volumineux ou allégé localement. Reimportez-le pour l'afficher.");
+  }
+}
+
 function closeDocViewer(){
   document.getElementById("doc-viewer").classList.remove("active");
-  document.getElementById("doc-viewer-body").innerHTML="";
+  var body=document.getElementById("doc-viewer-body");
+  body.innerHTML="";
+  body.classList.remove("pdf-mode");
 }
 
 function openPdfModal(){
