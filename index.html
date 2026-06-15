@@ -1396,6 +1396,17 @@ function addContact(){
   saveData();
 }
 
+function editContact(i){
+  var c=kids[idx].contacts[i];
+  var nom=prompt("Nom du contact :",c.n);if(nom===null)return;
+  var role=prompt("Rôle :",c.r);if(role===null)return;
+  var tel=prompt("Téléphone :",c.t);if(tel===null)return;
+  var initiales=(nom||"CT").split(" ").map(function(p){return p?p[0]:"";}).join("").substring(0,2).toUpperCase()||"CT";
+  kids[idx].contacts[i]={i:initiales,n:nom||c.n,r:role,t:tel};
+  renderContacts();
+  saveData();
+}
+
 function ytSearch(q){
   window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(q),"_blank");
 }
@@ -1513,8 +1524,9 @@ function renderContacts(){
     var safeTel=formatTelHref(c.t);
     var telHtml=safeTel?"<a href='tel:"+safeTel+"' class='cttel' style='display:inline-block;text-decoration:none;color:inherit;'>"+c.t+"</a>":"<div class='cttel'>"+c.t+"</div>";
     var d=document.createElement("div");d.className="ct-row";
-    d.innerHTML="<div class='ctav'>"+c.i+"</div><div style='flex:1'><div class='ctname'>"+c.n+"</div><div class='ctrole'>"+c.r+"</div>"+telHtml+"</div><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
-    d.querySelector("button").onclick=(function(i2){return function(){kids[idx].contacts.splice(i2,1);renderContacts();saveData();};})(i);
+    d.innerHTML="<div class='ctav'>"+c.i+"</div><div style='flex:1'><div class='ctname'>"+c.n+"</div><div class='ctrole'>"+c.r+"</div>"+telHtml+"</div><button class='ct-edit-btn' style='background:rgba(255,255,255,.25);border:none;color:inherit;border-radius:20px;padding:5px 10px;font-size:12px;cursor:pointer;flex-shrink:0;'>✏️</button><button style='background:none;border:none;color:inherit;opacity:.5;cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0;'>✕</button>";
+    d.querySelector(".ct-edit-btn").onclick=(function(i2){return function(){editContact(i2);};})(i);
+    d.querySelector("button:last-child").onclick=(function(i2){return function(){kids[idx].contacts.splice(i2,1);renderContacts();saveData();};})(i);
     el.appendChild(d);
   });
 }
@@ -2856,6 +2868,18 @@ async function generateRecapPdf(orientation){
 </script>
 
 <!-- Edit profile bottom sheet -->
+<div class="photo-sheet-overlay" id="photo-overlay" onclick="closePhotoSheet(event)">
+  <div class="photo-sheet">
+    <div class="ps-handle"></div>
+    <div class="ps-title">Photo de profil</div>
+    <button class="ps-btn" onclick="pickNewPhoto()"><span style="font-size:20px">📷</span> Choisir une photo</button>
+    <div id="photo-sheet-sep" class="ps-sep"></div>
+    <button class="ps-btn danger" id="photo-del-btn" onclick="deletePhoto()"><span style="font-size:20px">🗑️</span> Supprimer la photo</button>
+    <div class="ps-sep"></div>
+    <button class="ps-btn" onclick="dismissPhotoSheet()"><span style="font-size:20px">✕</span> Annuler</button>
+  </div>
+</div>
+
 <div class="photo-sheet-overlay" id="edit-overlay" onclick="closeEditSheet(event)">
   <div class="photo-sheet">
     <div class="ps-handle"></div>
